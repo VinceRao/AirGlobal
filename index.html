@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<style>
+  .axis {
+    font: 10px sans-serif;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .x.axis path {
+    display: none;
+  }
+
+  body {
+    font: 10px sans-serif;
+  }
+
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+</style>
+<html lang="en">
+  <head>
+    <title>FootPrint - China</title>
+    <link rel="stylesheet" type="text/css" href="css/footprint.css"/>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  </head>
+  <body>
+  <div style="width: 1500px;height: 800px">
+    <div id="map" style="float:left; width: 60%; height: inherit">
+      <p>
+        <button id="test"><span id="button-value">Pause</span></button>
+        <label for="nHeight"
+               style="display: inline-block; width: 150px; text-align: right">
+          date : <span id="nHeight-value">…</span>
+        </label>
+        <input style="display: inline-block; width: 240px" type="range" min="0" max="743" id="nHeight">
+      </p>
+
+    </div>
+    <div style="float:right;width: 40%; height: inherit">
+      <div id="bar" style="height: 50%"></div>
+      <div id="line" style="height: 50%"></div>
+    </div>
+  </div>
+  <script type="text/javascript" src="js/alpha.js"></script>
+  </body>
+</html>
