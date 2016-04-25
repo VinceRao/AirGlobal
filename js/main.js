@@ -14,6 +14,7 @@ require.config({
     'bootstrap' : 'js/third_party/bootstrap',
     'backbone' : 'js/third_party/backbone',
     'underscore' : 'js/third_party/underscore',
+    'text' : 'js/third_party/text',
 
     // Utilities
     'util' : 'js/util',
