@@ -66,31 +66,54 @@ define([
         defaultDate: "+1w",
         changeMonth: true,
         numberOfMonths: 3,
+        defaultDate : self.data.date_array[0],
         minDate : self.data.date_array[0],
         maxDate : self.data.date_array[self.data.date_array.length - 1],
         onClose: function( selectedDate ) {
           $( "#to" ).datepicker( "option", "minDate", selectedDate );
         },
-        onSelect: function (selectedDate) {
-          console.log(c.domain);
+        onSelect: function (selectedDate, e) {
+          bar.remove();
+          var domain = c.domain();
+          domain[0] = new Date(selectedDate);
+          c.domain(domain);
+          bar = d3.select(self.el).select("div.panel-body")
+            .append('div')
+            .attr('class', 'theme-example')
+            .call(c);
         }
       });
+      $( "#from" ).datepicker( "setDate", self.data.date_array[0] );
 
       $( "#to" ).datepicker({
         defaultDate: "+1w",
         changeMonth: true,
         numberOfMonths: 3,
+        defaultDate : self.data.date_array[self.data.date_array.length - 1],
         minDate : self.data.date_array[0],
         maxDate : self.data.date_array[self.data.date_array.length - 1],
         onClose: function( selectedDate ) {
           $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+        },
+        onSelect: function (selectedDate, e) {
+          bar.remove();
+          var domain = c.domain();
+          domain[1] = new Date(selectedDate);
+          c.domain(domain);
+          bar = d3.select(self.el).select("div.panel-body")
+            .append('div')
+            .attr('class', 'theme-example')
+            .call(c);
         }
       });
 
-      d3.select(this.el).select("div.panel-body")
-        .append('div')
-        .attr('class', 'theme-example')
-        .call(c);
+      $( "#to" ).datepicker( "setDate", self.data.date_array[self.data.date_array.length - 1] );
+
+
+      var bar = d3.select(this.el).select("div.panel-body")
+          .append('div')
+          .attr('class', 'theme-example')
+          .call(c);
     },
 
     change : function () {
@@ -98,6 +121,9 @@ define([
     },
 
     resize : function (self) {
+    },
+    fromChange : function (self, selectedDate) {
+
     }
 
   });

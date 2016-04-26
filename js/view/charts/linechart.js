@@ -28,7 +28,7 @@ define([
       });
 
       //chart elems
-      this.x = d3.time.scale().domain([opts.data.date_array[0], opts.data.date_array[opts.data.date_array.length - 1]]);
+      this.x = d3.time.scale();
       // this.x = d3.time.scale().domain([opts.data.date_array[0], opts.data.date_array[500]]);
       this.y = d3.scale.linear().domain([0, 500]);
 
@@ -64,10 +64,10 @@ define([
         .shapePadding(10)
         .scale(self.color);
 
-      this.svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(this.xAxis);
+      this.xa = this.svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(this.xAxis);
 
       this.svg.append("g")
         .attr("class", "y axis")
@@ -89,12 +89,19 @@ define([
     change : function (timestammp) {
       var self = this
         ;
-      var cities = this.getLineChartData(this.getIndex(timestammp));
+      var from = new Date($('#from').val());
+      var from_index = this.getIndex(from);
+      var to = new Date($('#to').val())
+      var cities = this.getLineChartData(from_index , this.getIndex(timestammp));
       // console.log(timestammp)
       var line = d3.svg.line()
         .interpolate("basis")
         .x(function(d) { return self.x(d.time); })
         .y(function(d) { return self.y(d.value); });
+
+      this.x.domain([from, to]);
+
+      this.xa.call(this.xAxis);
 
       this.color.domain(this.citystrs);
       this.city.remove();
@@ -123,13 +130,13 @@ define([
     resize : function (self) {
     },
 
-    getLineChartData : function (index) {
+    getLineChartData : function (first, index) {
       var data = [];
       var self = this;;
-      var last = index === 0 ? 1 : index;
+      var last = index === first ? index + 1 : index;
       this.citystrs.forEach(function (name, index) {
         temp =  {name : name};
-        temp.values = self.data.city_data[index].value.slice(0, last);
+        temp.values = self.data.city_data[index].value.slice(first, last);
         data.push(temp)
       });
       return data;

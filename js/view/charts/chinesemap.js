@@ -23,7 +23,7 @@ define([
       Panel.prototype.initialize.call(this);
       this.$el.appendTo(this.root.$el);
       this.color = d3.scale.linear()
-        .domain([0,500])
+        .domain([0,300])
         .range(["rgb(0, 255, 0)", "rgb(255, 0, 0)"]);
       d3.select(window).on('resize', function () {
         self.resize(self);
