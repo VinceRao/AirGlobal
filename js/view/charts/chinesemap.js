@@ -1,11 +1,9 @@
 define([
   'backbone',
   'jquery',
-  'd3',
   'view/common/panel',
-  'd3-legend'
-
-], function (Backbone, $, d3, Panel) {
+  'd3'
+], function (Backbone, $, Panel, d3) {
   var ChineseMap = Panel.extend({
     className : 'ag-panel',
 
@@ -27,11 +25,6 @@ define([
       this.color = d3.scale.linear()
         .domain([0,500])
         .range(["rgb(0, 255, 0)", "rgb(255, 0, 0)"]);
-      this.legendLinear = d3.legend.color()
-        .shapeWidth(30)
-        .cells(6)
-        .orient('horizontal')
-        .scale(this.color);
       d3.select(window).on('resize', function () {
         self.resize(self);
       });
@@ -46,6 +39,13 @@ define([
         , self = this
         , $def = $.Deferred()
         ;
+
+      this.legendLinear = d3.legend.color()
+        .shapeWidth(30)
+        .cells(6)
+        .orient('horizontal')
+        .scale(this.color);
+
       this.proj = d3.geo.mercator()
         .center([105, 38])
         .scale(height)
@@ -82,6 +82,7 @@ define([
           .data(cities.features)
           .enter()
           .append("path")
+          // .attr('fill', 'blue')
           // .attr("class", function(d) { return "q" + rateById.get(d.id); })
           .attr("d", self.path)
           .attr("id", function(d) {return d.id;})
@@ -111,28 +112,20 @@ define([
       return $def;
     },
 
-    change : function (timestammp) {
-      var value = this.data[timestammp]
+    index : 0,
+
+    change : function (timestamp) {
+      // console.log(this.getIndex(timestamp));
+      var value = this.data.data_array[this.getIndex(timestamp)]
         , self = this
         ;
-      var GUANGZHOU = "4401",
-        BEIJING = 'bei_jing',
-        SHNAHGHAI = 'shang_hai',
-        CHENGDU = '5101',
-        SHENGYANG = '2101';
-      value = [
-        {id:GUANGZHOU,v:50},
-        {id:BEIJING,v:500},
-        {id:SHNAHGHAI,v:300},
-        {id:CHENGDU,v:250},
-        {id:SHENGYANG,v:450}
-      ];
       value.forEach(function (d) {
         var v_pm = d.v;
         self.map.select("path[id='{0}']".format(d.id))
           .attr("fill", function() {return self.color(v_pm)})
         ;
       })
+      this.index++;
 
     },
 
@@ -150,7 +143,16 @@ define([
         .attr("width", width)
         .attr("height", height);
       self.map.selectAll('path').attr('d', self.path);
-    }
+    },
+
+    getIndex : function (time) {
+      var idx = this.data.date_array_number.indexOf(+time);
+      if (idx === -1){
+        console.info('bingo')
+      }
+      return idx;
+      // return this.data.date_array.indexOf(new Date(time));
+    },
 
   });
   return ChineseMap;

@@ -1,6 +1,7 @@
 'use stick'
 
 require.config({
+  urlArgs: 'v=' + (((1+Math.random())*0x1000000)|0).toString(16).substring(1),
   baseUrl : '.',
   paths : {
     view : 'js/view',
@@ -16,6 +17,8 @@ require.config({
     'backbone' : 'js/third_party/backbone',
     'underscore' : 'js/third_party/underscore',
     'text' : 'js/third_party/text',
+    'chroniton-only' : 'js/third_party/chroniton-only',
+    'chroniton-bundle' : 'js/third_party/chroniton-bundle',
 
     // Utilities
     'util' : 'js/util',
@@ -27,7 +30,9 @@ require.config({
 
     'backbone' : {deps : ['underscore', 'jquery']},
 
-    'd3-legend' : {deps: ['d3']}
+    'd3-legend' : {deps: ['d3']},
+
+    'chroniton-only' : {deps:['d3']}
   }
 });
 
