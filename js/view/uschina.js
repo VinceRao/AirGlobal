@@ -16,14 +16,18 @@ define([
       this.chineseMap = new ChineseMap({
         w : '800px',
         h : '600px',
-        title : 'Chinese Map'
+        title : 'Chinese Map',
+        rootView : this
       });
     },
 
     render : function () {
+      var self = this;
       this.$el.appendTo(this.root.el);
-      this.$el.append(this.chineseMap.$el);
-      this.chineseMap.draw();
+      a = this.chineseMap.draw();
+      $.when(a).done(function () {
+        self.chineseMap.fill();
+      });
     }
   });
   return USChina

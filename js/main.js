@@ -9,6 +9,7 @@ require.config({
 
     // third_party
     'd3' : 'js/third_party/d3',
+    'd3-legend' : 'js/third_party/d3-legend',
     'jquery' : 'js/third_party/jquery-2.2.3',
     'jquery-ui' : 'js/third_party/jquery-ui',
     'bootstrap' : 'js/third_party/bootstrap',
@@ -24,7 +25,9 @@ require.config({
   shim : {
     'bootstrap' : {deps : ['jquery']},
 
-    'backbone' : {deps : ['underscore', 'jquery']}
+    'backbone' : {deps : ['underscore', 'jquery']},
+
+    'd3-legend' : {deps: ['d3']}
   }
 });
 
