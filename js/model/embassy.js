@@ -3,6 +3,7 @@ define([
     'd3'
 ], function(DataModel, d3){
     var Embassy = DataModel.extend({
+        load_def : $.Deferred(),
         init : function(){
             console.log("Embassy init");
             console.log(d3);

@@ -7,7 +7,6 @@ define([
     'jquery'
 ], function (Backbone, d3, $) {
     var DataModel = Backbone.Model.extend({
-        load_def : $.Deferred(),
 
         init : function(){
             console.log("DataModel init.");

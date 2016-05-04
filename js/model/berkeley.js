@@ -3,6 +3,8 @@ define([
     'd3'
 ], function(DataModel, d3){
     var Berkeley = DataModel.extend({
+        load_def : $.Deferred(),
+
         init : function(){
             console.log("Berkeley init");
         },
@@ -77,17 +79,95 @@ define([
             return this.load_def.promise();
         },
 
+        //get data for all cities at timepoint t
+        getAllCityAtTime: function(microseconds){
+            var t;
+            if(microseconds <=2928) { //index
+                t = microseconds;
+            }else{
+                t = this.getTimeIndex(microseconds);//absolute microseconds
+            }
+            return this.by_time[t];
+        },
+
+        //get data for all timepoints for a city
+        getAllTimeForCity: function(cityname){
+            var city = this.getCityIndex(cityname);
+            return this.by_city[city];
+        },
+
+        //select time range, input are start time and end time, output is array[length of range]
+        getTimeRangeData: function(start, end){
+            var ts = this.getTimeIndex(start);
+            var te = this.getTimeIndex(end);
+            return this.by_time.slice(ts, te+1);
+        },
+
+        //select cities, return all timepoints data for the cities in a map.me
+        getCitiesData: function(names){
+            var map = {};
+            for(var i = 0; i < names.length; i++){
+                var name = names[i];
+                var citydata = this.getAllTimeForCity(name);
+                map[name] = citydata;
+            }
+            return map;
+        },
+
+        //select cities for a set of timepoints, return a map, timepoints can be indices or microseconds
+        getCitiesTimepoints: function(names, timepoints){
+            var citiesAllTime = this.getCitiesData(names);
+            var map = {};
+            var indices = [];
+            var microseconds = [];
+            for(var i = 0; i < timepoints.length; i++){
+                var t = timepoints[i];
+                var idx;
+                var microsecond;
+                if(t <= 2928){ //time indices
+                    idx = t;
+                    microsecond = this.getMicroseconds(idx);
+                }else{//microseconds
+                    var idx = this.getTimeIndex(t);
+                    microsecond = t;
+                }
+                indices.push(idx);
+                microseconds.push(microsecond);
+            }
+
+            map.cities = names;
+            map.timepoints = microseconds;
+            map.timeindices = indices;
+            for (var city in citiesAllTime){
+                var alltimearray = citiesAllTime[city];
+                map[city] = [];
+                for( var i = 0 ; i < map.timeindices.length; i++){
+                    var idx = map.timeindices[i];
+                    map[city].push(alltimearray[idx]);
+                }
+            }
+            return map;
+        },
+
         //get time index in the by_time array (length 2928)
         getTimeIndex: function(microseconds){
-            console.log(microseconds);
-            console.log(this.start);
             return (microseconds - this.start)/this.interval;
+        },
+
+        //get microsecond from time index
+        getMicroseconds: function(time_index){
+          return this.start + this.interval * time_index;
         },
 
         //get city index in the by_city array (length 182)
         getCityIndex: function(cityname){
             return this.city_index[cityname];
         },
+
+        //get all city names
+        getAllCities: function(){
+            return Object.keys(this.city_map);
+        }
     });
 
     return Berkeley;
