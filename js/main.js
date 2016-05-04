@@ -38,7 +38,8 @@ require.config({
 
 require([
   'console',
-], function (Console) {
+  'model/berkeley'
+], function (Console, Berkeley) {
   var app = new Console();
   app.init();
 });
