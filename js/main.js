@@ -1,7 +1,7 @@
 'use stick'
 
 require.config({
-  urlArgs: 'v=' + (((1+Math.random())*0x1000000)|0).toString(16).substring(1),
+  //urlArgs: 'v=' + (((1+Math.random())*0x1000000)|0).toString(16).substring(1),
   baseUrl : '.',
   paths : {
     view : 'js/view',

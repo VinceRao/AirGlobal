@@ -11,13 +11,28 @@ define([
         },
         load : function(){
             var self = this;
-
-            /* load the data, resolve in callback function:"$load_def.resolve();"*/
-            d3.csv('Data/China_Station_PM25.csv', function(data){
-               // console.log(data);
+            function callback(data){
+                /*var AQI = [];
+                data.forEach(function(t){
+                    if(t['Value'] <= 50){
+                        AQI.push("Good");
+                    }else if(t['Value'] <= 100){
+                        AQI.push("Moderate");
+                    }else if(t['Value'] <= 150){
+                        AQI.push("USG");
+                    }else if(t['Value'] <= 200){
+                        AQI.push("Unhealthy");
+                    }else if(t['Value'] <= 300){
+                        AQI.push("Very Unhealthy");
+                    }else {
+                        AQI.push("Hazardous");
+                    }
+                });*/
+              //  console.log(AQI);
                 self.finish();
-            });
 
+            }
+            d3.csv('Data/beijing_combined.csv', callback);
             return this.load_def.promise();
         }
     });
