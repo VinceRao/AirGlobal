@@ -2,7 +2,8 @@ define([
   'backbone',
   'jquery',
   'view/common/panel',
-  'd3'
+  'd3',
+  'd3-legend'
 ], function (Backbone, $, Panel, d3) {
   var ChineseMap = Panel.extend({
     className : 'ag-panel',

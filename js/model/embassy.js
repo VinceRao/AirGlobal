@@ -24,7 +24,6 @@ define([
             self.interval = 3600000*24;
             self.city_map = {}; //get initialized from an instance of Berkeley
 
-
             var beijing = function (data){
                 self.beijing.start = self.getUTCMilliseconds(data[0].Date);
                 self.beijing.end = self.getUTCMilliseconds(data[data.length-1].Date);
@@ -67,7 +66,6 @@ define([
                 d3.csv('Data/US_mission_China/chengdu_daily.csv', chengdu);
             };
             d3.csv('Data/US_mission_China/beijing_daily.csv', beijing);
-
             return this.load_def.promise();
         },
 

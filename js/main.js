@@ -9,6 +9,7 @@ require.config({
     template : 'templates',
 
     // third_party
+    'require': 'js/third_party/require',
     'd3' : 'js/third_party/d3',
     'd3-legend' : 'js/third_party/d3-legend',
     'jquery' : 'js/third_party/jquery-2.2.3',
@@ -19,6 +20,7 @@ require.config({
     'text' : 'js/third_party/text',
     'chroniton-only' : 'js/third_party/chroniton-only',
     'chroniton-bundle' : 'js/third_party/chroniton-bundle',
+    'isotope' : 'js/third_party/isotope.pkgd',
 
     // Utilities
     'util' : 'js/util',
@@ -37,9 +39,20 @@ require.config({
 });
 
 require([
+  'require',
   'console',
-  'model/berkeley'
-], function (Console, Berkeley) {
+  'jquery',
+  'isotope',
+  'bootstrap',
+  'util'
+], function (require, Console, $, Isotope) {
+  require( [ 'jquery-bridget/jquery.bridget' ],
+    function() {
+      // make Isotope a jQuery plugin
+      $.bridget( 'isotope', Isotope );
+      // now you can use $().isotope()
+    }
+  );
   var app = new Console();
   app.init();
 });

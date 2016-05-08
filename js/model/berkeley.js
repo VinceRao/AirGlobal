@@ -216,6 +216,8 @@ define([
                 return "#ff0000";  //red
             }else if(concentration <= 300){
                 return "#993366";  //purple
+            }else if(_.isNaN(concentration)){
+                return "#ffffff";  //white
             }else {
                 return "#663300";  //brown
             }

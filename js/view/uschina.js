@@ -6,7 +6,6 @@ define([
   'view/charts/chinesemap',
   'view/charts/linechart',
   'view/control',
-  'd3-legend'
 ], function (Backbone, $, ChineseMap, LineChart, Control) {
   var USChina = Backbone.View.extend({
 
