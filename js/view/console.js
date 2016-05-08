@@ -8,7 +8,7 @@ define([
   'view/uschina',
   'model/berkeley',
   'model/embassy',
-  'd3-legend',
+  'view/charts/smallmultiple'
 ], function (
   $,
   Backbone,
@@ -16,7 +16,8 @@ define([
   d3,
   USChina,
   Berkeley,
-  Embassy
+  Embassy,
+  SmallMultiple
 ) {
   var Console = function () {
   };
@@ -69,8 +70,12 @@ define([
           var selecteddata = options.data.berkeley.getCitiesTimepoints(somecities, timepoints);
           console.log(selecteddata);
 
-/*        uschinaContainer = new USChina({root : options.rootView, data : options.data})
-        uschinaContainer.render();*/
+        // uschinaContainer = new USChina({root : options.rootView, data : options.data})
+        // uschinaContainer.render();
+        var small = new SmallMultiple(options);
+        small.render();
+
+        
       });
     }
   };
