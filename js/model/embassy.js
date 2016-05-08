@@ -12,23 +12,7 @@ define([
         load : function(){
             var self = this;
             function callback(data){
-                /*var AQI = [];
-                data.forEach(function(t){
-                    if(t['Value'] <= 50){
-                        AQI.push("Good");
-                    }else if(t['Value'] <= 100){
-                        AQI.push("Moderate");
-                    }else if(t['Value'] <= 150){
-                        AQI.push("USG");
-                    }else if(t['Value'] <= 200){
-                        AQI.push("Unhealthy");
-                    }else if(t['Value'] <= 300){
-                        AQI.push("Very Unhealthy");
-                    }else {
-                        AQI.push("Hazardous");
-                    }
-                });*/
-              //  console.log(AQI);
+
                 self.finish();
 
             }
