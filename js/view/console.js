@@ -91,7 +91,7 @@ define([
           //get certain timepoints for a set of cities, return a map with timepoints, indices, and city-array pairs
           //timepoints can be indices or microseconds
           var timepoints = [options.data.berkeley.start, 1, 121];
-          //var somecities = ["Anshan","Beijing","Zunyi"] //0, 6, 181 in cities //already defined above
+          var somecities = ["Anshan","Beijing","Zunyi"] //0, 6, 181 in cities //already defined above
           var selecteddata = options.data.berkeley.getCitiesTimepoints(somecities, timepoints);
           console.log(selecteddata);
 
