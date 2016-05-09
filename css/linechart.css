@@ -2,7 +2,7 @@ body {
     padding: 10px 20px;
     background: #eeeeee;
     font-family: sans-serif;
-    text-align: center;
+    /*text-align: center;*/
     color: #777;
 }
 
@@ -65,3 +65,4 @@ div.tooltipline {
     border-radius: 8px;
     pointer-events: none;
 }
+

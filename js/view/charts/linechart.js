@@ -22,8 +22,8 @@ define([
       };
 
       var div = d3.select("body").append("div")
-          .attr("class", "tooltipline")
-          .style("opacity", 0);
+        .attr("class", "tooltipline")
+        .style("opacity", 0);
 
       var self = this;
       width = 1500 - margin.left - margin.right;
@@ -72,53 +72,53 @@ define([
           var day = self.showSpecificDate(d.day);
           var pm = "PM: " + d.temp;
           div.transition()
-              .duration(200)
-              .style("opacity", .9);
+            .duration(200)
+            .style("opacity", .9);
           div.html(day + "<br/>"  + pm)
-              .style("left", (d3.event.pageX) + "px")
-              .style("top", (d3.event.pageY - 28) + "px");
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
         }).on("mouseout", function() {
           div.transition()
-              .duration(500)
-              .style("opacity", 0);
+            .duration(500)
+            .style("opacity", 0);
         });
       });
 
       var tempro = d3.select(elem).selectAll("svg");
       tempro.remove();
       svg = d3.select(elem).append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       svg.append("rect")
-          .attr('class', 'zoom-panel')
-          .attr("width", width)
-          .attr("height", height)
-          .call(zoom);
+        .attr('class', 'zoom-panel')
+        .attr("width", width)
+        .attr("height", height)
+        .call(zoom);
       defs = svg.append('svg')
-          .attr('width', 0)
-          .attr('height', 0)
-          .append('defs');
+        .attr('width', 0)
+        .attr('height', 0)
+        .append('defs');
       defs.append('clipPath')
-          .attr('id', 'clipper')
-          .append('rect').attr('x', 0)
-          .attr('y', 0).attr('width', width)
-          .attr('height', height);
+        .attr('id', 'clipper')
+        .append('rect').attr('x', 0)
+        .attr('y', 0).attr('width', width)
+        .attr('height', height);
       svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
       svg.append("g")
-          .attr("class", "y axis")
-          .attr("transform", "translate(0,0)")
-          .call(yAxis).append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", -40).attr('x', -180)
-          .attr("dy", ".71em")
-          .style("text-anchor", "center")
-          .style("font-size","13px")
-          .text("Air Pollution PM25");
+        .attr("class", "y axis")
+        .attr("transform", "translate(0,0)")
+        .call(yAxis).append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -40).attr('x', -180)
+        .attr("dy", ".71em")
+        .style("text-anchor", "center")
+        .style("font-size","13px")
+        .text("Air Pollution PM25");
 
 
       //compute the maxday minday and maxtemp and mintemp for scale extent
@@ -157,12 +157,12 @@ define([
         });
 
         cityEnter.append('g')
-            .attr('class', 'dots')
-            .attr('clip-path', 'url(#clipper)')
-            .selectAll('circle')
-            .data(function(d) {
-              return d.temps;
-            }).enter().append('circle').attr('class', 'dot');
+          .attr('class', 'dots')
+          .attr('clip-path', 'url(#clipper)')
+          .selectAll('circle')
+          .data(function(d) {
+            return d.temps;
+          }).enter().append('circle').attr('class', 'dot');
         city.select('.dots').style('stroke', function(d) {
           return color(d.name);
         }).selectAll('circle').transition().duration(500).attr('cy', function(d) {
@@ -218,8 +218,8 @@ define([
     showSpecificDate : function (d) {
       var date = this.data.getMicroseconds(d);
       var time = new Date(date);
-        daydate = (time.getMonth()+1).toString()+'/'
-            +(time.getDate()).toString()+'/'+time.getFullYear().toString();
+      daydate = (time.getMonth()+1).toString()+'/'
+        +(time.getDate()).toString()+'/'+time.getFullYear().toString();
       return daydate;
     },
 

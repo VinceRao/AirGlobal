@@ -45,7 +45,6 @@ define([
                         var shanghai = function(data){
                             self.shanghai.start = self.getUTCMilliseconds(data[0].Date);
                             self.shanghai.end = self.getUTCMilliseconds(data[1856].Date);
-
                             data.forEach(function(entry){
                                 self.shanghai.data.push(+entry['Value']);
                             });

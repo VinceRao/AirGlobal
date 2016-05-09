@@ -7,7 +7,7 @@ define([
   'd3',
   'view/uschina',
   'model/berkeley',
-  'model/embassy',
+  'model/embassy'
 ], function (
   $,
   Backbone,

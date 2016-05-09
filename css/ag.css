@@ -31,3 +31,27 @@ body {
     padding-left:0;
 }
 
+#userInterface{
+    position: fixed;
+    overflow: scroll;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    width: 130px;
+    padding: 10px;
+    background-color:rgba(0,0,0,0.8);
+    z-index: 5;
+    text-align: right;
+    color: white;
+    padding-top: 35px;
+}
+.grid{
+    position: relative;
+    padding-top: 50px;
+    width: 50%;
+}
+#filter{
+    position: fixed;
+    top: 0px;
+    z-index: 5;
+}
