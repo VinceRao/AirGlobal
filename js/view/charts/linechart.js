@@ -99,7 +99,7 @@ define([
           .attr("y", -40).attr('x', -180)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
-          .text("Temperature");
+          .text("Air Pollution PM25");
 
       //compute the maxday minday and maxtemp and mintemp for scale extent
       return function(data) {
@@ -198,39 +198,6 @@ define([
       return data;
     },
 
-
-    //airDataGen : (function() {
-    //  return (function(id) {
-    //    return function() {
-    //      var data, j, nums, tempSeed;
-    //      //nums = Math.ceil(Math.random() * 11) + 4;
-    //      //tempSeed = Math.round(Math.random() * 30);
-    //      data = {
-    //        id: id,
-    //        name: "City " + "beijing",
-    //        temps: (function() {
-    //          var results;
-    //          results = [];
-    //          for (j = 1; j < 11; j++) {
-    //            if(j==1){
-    //              continue;
-    //            }
-    //            results.push({
-    //              day: j,
-    //              temp: Math.round(Math.random() * 50)
-    //            });
-    //          }
-    //          return results;
-    //        })()
-    //      };
-    //      id = id + 1;
-    //      return data;
-    //    };
-    //  })(1);
-    //})(),
-
-
-
     drawLineByCity : function (cityName){
       var self = this;
       var data = self.formateDataForDrawLine(cityName);
@@ -238,22 +205,29 @@ define([
       console.log(data);
       cityCheck = document.getElementById(cityName);
       cityCheck.addEventListener('change', function(){
-      if(cityCheck.checked){
-        self.linchartData.push(data);
-        return self.chart(self.el)(self.linchartData);
-      }else {
-        for(var i = 0; i<self.linchartData.length;i++){
-          if(self.linchartData[i].name=="City "+cityName){
-            console.log("I am remove");
-            self.linchartData.splice(i,1);
-            return self.chart(self.el)(self.linchartData);
-          }
+        if(cityCheck.checked){
+          self.listenAddCity(cityName);
+        }else {
+          self.listenRemoveCity(cityName);
         }
-      }
-    });
+      });
     },
 
+    listenAddCity : function(cityName){
+      var data = this.formateDataForDrawLine(cityName);
+      this.linchartData.push(data);
+      return this.chart(this.el)(this.linchartData);
+    },
 
+    listenRemoveCity : function(cityName){
+      for(var i = 0; i<this.linchartData.length;i++){
+        if(this.linchartData[i].name=="City "+cityName){
+          console.log("I am remove");
+          this.linchartData.splice(i,1);
+          return this.chart(this.el)(this.linchartData);
+        }
+      }
+    },
 
     render : function () {
       var data = this.formateDataForDrawLine("Shanghai");
