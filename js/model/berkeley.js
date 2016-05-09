@@ -32,6 +32,7 @@ define([
                     /*set the time frame of the date*/
                     self.start = 1396681200000;
                     self.interval = 3600000*24;
+                    self.end = self.start + self.interval * 122;
                     //console.log(self.start);
                     //console.log(self.interval);
 
@@ -47,9 +48,9 @@ define([
                     time_rows.forEach(function (entry, index) {
                         var day_array = []; // length of 182 eventually
                         for (var city in entry) {
-                            day_array.push(entry[city]);
+                            day_array.push(+entry[city]);
                             var idx = self.getCityIndex(city);
-                            self.by_city[idx].push(entry[city]);
+                            self.by_city[idx].push(+entry[city]);
                         }
                         self.by_day.push(day_array);
                     });
@@ -66,6 +67,20 @@ define([
             return this.load_def.promise();
         },
 
+        //get all city data for a time range
+        getOneCityInTimeRange: function(city, start, end){
+            var res = [];
+            var alltime = this.getAllDayForCity(city);
+            var istart = this.getDayIndex(start);
+            var iend = this.getDayIndex(end);
+            for(var i = istart; i <= iend; i++){
+                var datapoint = {};
+                datapoint.date = this.getMicroseconds(i);
+                datapoint.value = alltime[i];
+                res.push(datapoint);
+            }
+            return res;
+        },
 
         //get data for all cities at time
         getAllCityAtDay: function(time){
@@ -83,6 +98,7 @@ define([
             var city = this.getCityIndex(cityname);
             return this.by_city[city];
         },
+
 
         //select time range, input are start time and end time, output is array[length of range]
         getTimeRangeData: function(start, end){
@@ -152,14 +168,27 @@ define([
             return this.city_index[cityname];
         },
 
+        //get map id
+        getMapID: function(cityname){
+            return this.city_map[cityname];
+        },
+
         //get all city names
         getAllCities: function(){
             return Object.keys(this.city_map);
         },
+        getStart: function(){
+            return this.start;
+        },
+        getEnd: function(){
+            return this.end;
+        },
 
         //given concentration calculate AQI
         getAQI: function(concentration){
-            if(concentration <= 50){
+            if(_.isNaN(concentration)){
+                return null;
+            } else if(concentration <= 50){
                 return "Good";
             }else if(concentration <= 100){
                 return "Moderate";
@@ -175,7 +204,9 @@ define([
         },
         //given concentration get color
         getColor: function(concentration){
-            if(concentration <= 50){
+            if(_.isNaN(concentration)){
+                return "#ffffff";
+            } else if(concentration <= 50){
                 return "#00cc00"; //green
             }else if(concentration <= 100){
                 return "#ffff00"; //yellow
