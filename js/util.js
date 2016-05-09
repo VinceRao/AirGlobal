@@ -12,13 +12,14 @@ define([
       });
     };
 
-    Math.median = function(ary) {
-      var  numA, i;
-      for (i = ary.length-1; i >= 0; i--) {
-          ary[i] = +ary[i];
+    Math.median = function(arya) {
+      var  numA, i, ary = [];
+      for (i = arya.length-1; i >= 0; i--) {
+          if(!_.isNaN(+arya[i])){
+            ary.push(+arya[i]);
+          }
       }
-      numA = function(a, b){return (a-b);};
-      ary.sort(numA);
+      ary.sort();
       while (ary.length > 1 && !isFinite(ary[0])) ary.shift();
       return ary[Math.floor(ary.length/2)];
     }

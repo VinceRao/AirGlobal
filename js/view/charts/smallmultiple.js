@@ -14,6 +14,7 @@ define([
         this.$grid = $(".grid");
         this.$grid.css('overflow', 'scroll');
         this.$grid.width('1000px');
+        this.curAttr;
       },
       render : function () {
         var self = this;
@@ -32,8 +33,7 @@ define([
           .append("g")
           .attr("transform", "translate(" + (r + m) + "," + (r + m) + ")")
 
-        var locks = div.append('span').attr("class", "glyphicons glyphicons-unlock")
-        var texts = svg.append("text")
+        var cities = svg.append("text")
           .attr("dy", "-3px")
           .attr("dx", "0px")
           .attr("class", "cityname")
@@ -41,18 +41,27 @@ define([
           .attr("font-size", "12")
           .text(function(d) { return d; });
 
-        var rects = svg.append('rect')
+        this.rects = svg.append('rect')
           .attr("x", "-40px")
           .attr("y", "-2px")
           .attr("width", "80")
           .attr("height", "18")
-          // .attr("fill-opacity", "0.4")
         ;
 
-        var texts2 = svg.append("text")
+        var cur = svg.append("text")
           .attr("dx", "0px")
           .attr("dy", "11px")
           .attr("class", "value")
+          .attr("text-anchor", "middle")
+          .attr("font-size", "14")
+          .attr("font-weight", "900")
+          .attr("display", "none")
+          ;
+
+        this.max = svg.append("text")
+          .attr("dx", "0px")
+          .attr("dy", "11px")
+          .attr("class", "max")
           .attr("text-anchor", "middle")
           .attr("font-size", "14")
           .attr("font-weight", "900")
@@ -60,17 +69,44 @@ define([
             return (+d3.max(self.data.getAllDayForCity(d))).toFixed(2);
           });
 
-        rects.attr("fill", function () {
-            var value = $(this.parentElement).find('.value').text()
+        this.curAttr = this.max;
+
+        this.min = svg.append("text")
+          .attr("dx", "0px")
+          .attr("dy", "11px")
+          .attr("class", "min")
+          .attr("text-anchor", "middle")
+          .attr("font-size", "14")
+          .attr("font-weight", "900")
+          .attr("display", "none")
+          .text(function(d, i) {
+            return (+d3.min(self.data.getAllDayForCity(d))).toFixed(2);
+          });
+
+        this.med = svg.append("text")
+          .attr("dx", "0px")
+          .attr("dy", "11px")
+          .attr("class", "med")
+          .attr("text-anchor", "middle")
+          .attr("font-size", "14")
+          .attr("font-weight", "900")
+          .attr("display", "none")
+          .text(function(d, i) {
+            return (+Math.median(self.data.getAllDayForCity(d))).toFixed(2);
+          });
+
+
+        this.rects.attr("fill", function () {
+            var value = $(this.parentElement).find('.max').text()
             return self.data.getColor(+value);
           })
 
-        var texts3 = svg.append("text")
+        var times = svg.append("text")
           .attr("dx", "0px")
           .attr("dy", "26px")
           .attr("text-anchor", "middle")
           .attr("font-size", "10")
-          .text(function(d, i) { return new Intl.DateTimeFormat('en-US').format(new Date(self.data.getMicroseconds(0)));});
+          // .text(function(d, i) { return new Intl.DateTimeFormat('en-US').format(new Date(self.data.getMicroseconds(0)));});
 
         var pie = d3.layout.pie();
         pie.sort(null);
@@ -98,14 +134,16 @@ define([
               a.attr('stroke', 'red');
               a.attr('stroke-width', 2);
             });
-            texts2.text(function(d){
+            cur.attr("display", null)
+              .text(function(d){
               return self.data.getAllDayForCity(d)[i].toFixed(2);
             });
-            rects.attr("fill", function () {
+            self.curAttr.attr("display", "none");
+            self.rects.attr("fill", function () {
               var value = $(this.parentElement).find('.value').text()
               return self.data.getColor(+value);
             })
-            texts3.text(function(d){
+            times.text(function(d){
               return new Intl.DateTimeFormat('en-US').format(new Date(self.data.getMicroseconds(i)));
             });
           })
@@ -116,16 +154,16 @@ define([
               a.attr('stroke', null);
               a.attr('stroke-width', null);
             });
-            texts2.text(function(d) {
-              return(+d3.max(self.data.getAllDayForCity(d))).toFixed(2)
-            });
-            rects.attr("fill", function () {
-              var value = $(this.parentElement).find('.value').text()
+            cur.attr("display", "none");
+
+            self.curAttr.attr("display", null);
+
+            self.rects.attr("fill", function () {
+              var value = $(this.parentElement).find('text:visible')[1].textContent;
               return self.data.getColor(+value);
             })
-            texts3.text(function(d){
-              return new Intl.DateTimeFormat('en-US').format(new Date(self.data.getMicroseconds(0)));
-              // return new Date(self.data.getMicroseconds(i));
+            times.text(function(d){
+              return "";
             });
           })
         $('.grid').isotope({
@@ -133,9 +171,15 @@ define([
           layoutMode: 'fitRows',
           getSortData: {
             name: '.cityname',
-            value: function (e) {
-              return +$(e).find('.value').text();
-            }
+            max: function (e) {
+              return +$(e).find('.max').text();
+            },
+            min: function (e) {
+              return +$(e).find('.min').text();
+            },
+            med: function (e) {
+              return +$(e).find('.med').text();
+            },
           }
         });
       },
@@ -145,10 +189,71 @@ define([
         'click .filter-opt' : 'setFilterOpt',
         'click #search' : 'search',
         'click #reset' : 'reset',
+        'click button.min' : 'sorttByMin',
+        'click button.name' : 'sorttByName',
+        'click button.max' : 'sorttByMax',
+        'click button.med' : 'sorttByMed',
 
       },
-      showEvent : function (e) {
-        console.info(e);
+
+      sorttByMin : function(){
+        var self = this;
+        this.curAttr.attr("display", "none");
+        this.curAttr = this.min;
+        this.curAttr.attr("display", null);
+        this.rects.attr("fill", function () {
+          var value = $(this.parentElement).find('.min').text()
+          return self.data.getColor(+value);
+        })
+        this.$grid.isotope({
+          sortBy: 'min',
+          sortAscending: true
+        });
+      },
+
+      sorttByName : function(){
+        var self = this;
+        this.curAttr.attr("display", "none");
+        this.curAttr = this.max;
+        this.curAttr.attr("display", null);
+        this.rects.attr("fill", function () {
+          var value = $(this.parentElement).find('.max').text()
+          return self.data.getColor(+value);
+        })
+        this.$grid.isotope({
+          sortBy: 'name',
+          sortAscending: true
+        });
+      },
+
+      sorttByMax : function(){
+        var self = this;
+        this.curAttr.attr("display", "none");
+        this.curAttr = this.max;
+        this.curAttr.attr("display", null);
+        this.rects.attr("fill", function () {
+          var value = $(this.parentElement).find('.max').text()
+          return self.data.getColor(+value);
+        })
+        this.$grid.isotope({
+          sortBy: 'max',
+          sortAscending: false
+        });
+      },
+
+      sorttByMed : function(){
+        var self = this;
+        this.curAttr.attr("display", "none");
+        this.curAttr = this.med;
+        this.curAttr.attr("display", null);
+        this.rects.attr("fill", function () {
+          var value = $(this.parentElement).find('.med').text()
+          return self.data.getColor(+value);
+        })
+        this.$grid.isotope({
+          sortBy: 'med',
+          sortAscending: false
+        });
       },
       setFilterAttr : function(e) {
         this.$filter.find('#attr-name').text(e.currentTarget.text);
@@ -165,7 +270,7 @@ define([
       filter : function (attr, opt, value) {
         var self = this;
         if(_.isNaN(+value)){
-          value = d3.max(this.data.getAllDayForCity(value));
+          value = d3.max(this.data.getAllDayForCity(value)).toFixed();
         }
         $('.grid').isotope({
           filter: function (e) {
@@ -173,7 +278,7 @@ define([
             if (e === 0){
               target = this;
             }
-            var number = $(target).find('.value').text(),
+            var number = $(target).find('.max').text(),
                 result;
             if(opt === 'Larger Than'){
               result = parseFloat( number, 10 ) >= +value;
