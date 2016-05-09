@@ -36,10 +36,13 @@ define([
 
       $.when(defer_berkeley, defer_embassy).done(function () {
           options.data.embassy.city_map = options.data.berkeley.city_map;
-          console.log(options.data.embassy);
+          //console.log(options.data.embassy);
           var b = options.data.berkeley;
           var e = options.data.embassy;
-          console.log(options.data.embassy);
+          //console.log(options.data.embassy);
+
+          var shanghaidata = b.getAllDayForCity("Shanghai");
+          console.log(shanghaidata);
 
           //test embassy
           var t1 = e.beijing.start;
@@ -51,7 +54,7 @@ define([
           var t6 = e.shanghai.end;
           var t7 = e.chengdu.end;
           var t8 = e.shenyang.end;
-          console.log(t5);
+          /*console.log(t5);
           console.log(t6);
           console.log(t7);
           console.log(t8);
@@ -76,7 +79,7 @@ define([
           console.log(e.getOneCityInTimeRange("Shanghai", t3, t6));
           console.log(e.getOneCityInTimeRange("Chengdu", t2, t7));
           console.log(e.getOneCityInTimeRange("Shenyang", t4, t8));
-
+*/
 
           /*// an array of all cities
            var cities = options.data.berkeley.getAllCities();
@@ -86,7 +89,7 @@ define([
            var beijingdata = options.data.berkeley.getAllDayForCity("Beijing");
            console.log(beijingdata);
 
-           // get all days data for a set of cities
+             // get all days data for a set of cities
            var somecities = ["Anshan","Beijing","Zunyi"] //0, 6, 181 in cities
            var somecitiesAlltime = options.data.berkeley.getCitiesData(somecities);
            console.log(somecitiesAlltime);
