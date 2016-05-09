@@ -169,21 +169,20 @@ define([
         }
         $('.grid').isotope({
           filter: function (e) {
-            // var number = $(this).find('.value').text(),
-            //     result;
-            // if(opt === 'Larger Than'){
-            //   result = parseFloat( number, 10 ) >= +value;
-            // } else if (opt === 'Less Than'){
-            //   result = parseFloat( number, 10 ) <= +value;
-            // } else {
-            //   result = parseFloat( number, 10 ) == +value;
-            // }
-            // return result;
-            console.info(this);
-            console.info($(this));
-            console.info(e);
-            console.info($(e));
-            return true;
+            var target = e;
+            if (e === 0){
+              target = this;
+            }
+            var number = $(target).find('.value').text(),
+                result;
+            if(opt === 'Larger Than'){
+              result = parseFloat( number, 10 ) >= +value;
+            } else if (opt === 'Less Than'){
+              result = parseFloat( number, 10 ) <= +value;
+            } else {
+              result = parseFloat( number, 10 ) == +value;
+            }
+            return result;
           }
         });
       },
