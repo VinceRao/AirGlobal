@@ -29,20 +29,21 @@ define([
         rootView : this,
         data : options.data
       });
-      this.lineChart2 = new LineChart({
-        w : '800px',
-        h : '300px',
-        title : 'Cusstom Line Chart',
-        rootView : this,
-        data : options.data
-      });
-      this.control = new Control({
-        w : '1000px',
-        h : '300px',
-        title : 'Control',
-        rootView : this,
-        data : options.data
-      });
+      
+      // this.lineChart2 = new LineChart({
+      //   w : '800px',
+      //   h : '300px',
+      //   title : 'Cusstom Line Chart',
+      //   rootView : this,
+      //   data : options.data
+      // });
+      // this.control = new Control({
+      //   w : '1000px',
+      //   h : '300px',
+      //   title : 'Control',
+      //   rootView : this,
+      //   data : options.data
+      // });
     },
 
     render : function () {

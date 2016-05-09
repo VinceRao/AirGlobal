@@ -47,9 +47,9 @@ define([
                     time_rows.forEach(function (entry, index) {
                         var day_array = []; // length of 182 eventually
                         for (var city in entry) {
-                            day_array.push(entry[city]);
+                            day_array.push(+entry[city]);
                             var idx = self.getCityIndex(city);
-                            self.by_city[idx].push(entry[city]);
+                            self.by_city[idx].push(+entry[city]);
                         }
                         self.by_day.push(day_array);
                     });

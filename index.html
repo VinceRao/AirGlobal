@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Air Global</title>
     <link rel="stylesheet" href="css/ag.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/footprint.css">
     <link rel="stylesheet" href="css/linechart.css">
     <link rel="stylesheet" href="css/third_party/jquery-ui.css">
@@ -11,7 +12,84 @@
     <link rel="stylesheet" href="css/third_party/chroniton-example.css">
 </head>
 <body>
-    <div id="ag-root"></div>
+    <div id="ag-root">
+        <!--<div id="userInterface">-->
+            <!--<header>-->
+                <!--<t id="hTennis">untangling</t>-->
+                <!--<t id="hSuccess">tennis</t>-->
+            <!--</header>-->
+            <!--<nav>-->
+                <!--<br>-->
+                <!--<a href="http://untangling-tennis.net" target="_blank" id="back-intro" style="padding-right:45px; font-size: 15px;">intro</a>-->
+                <!--<div><br></div>-->
+            <!--</nav>-->
+            <!--<nav>-->
+                <!--<br>-->
+                <!--<form id"click"="">-->
+                <!--<label><input id="performanceClick" value="performanceClick" type="radio" name="multipleClick" checked="checked"><span class="multiSelect">Performance</span></label>-->
+                <!--<p class="infoBox">?<span class="infoHover">Player careers rolled up clockwise as icons. <img class="desc-img" src="descriptions/rederer-performance.png" style="opacity: 1;"> The larger the circles, the higher their best place in the rankings.</span></p><br>-->
+                <!--<label><input id="wikiClick" value="wikiClick" type="radio" name="multipleClick"><span class="multiSelect">Popularity</span></label>-->
+                <!--<p class="infoBox">?<span class="infoHover">Number of Wikipedia pageviews players received each year between 2009 and 2015 <br><img class="desc-img" src="descriptions/wikiline.png" style="opacity: 1;"><br></span></p><br>-->
+                <!--<label><input id="wikiModelClick" value="wikiModelClick" type="radio" name="multipleClick"><span class="multiSelect">Prediction</span></label>-->
+                <!--<p class="infoBox">?<span class="infoHover">Comparison between the yearly measured and predicted popularity. <br><img class="desc-img" src="descriptions/modelarea.png" style="opacity: 1;"><br> Red = Overpredicted <br> Blue = Underpredicted</span></p><br>-->
+                <!--</form>-->
+            <!--</nav>-->
+            <!--<br>-->
+            <!--<nav id="sorting">-->
+                <!--<h3>Sorting</h3>-->
+                <!--&lt;!&ndash; <h4>Multiples</h4> &ndash;&gt;-->
+                <!--<form id="uiSort">-->
+                    <!--<label><input id="titleSort" value="title" type="radio" name="oneDimSort"><span>Name</span></label>-->
+                    <!--<p class="infoBox">?<span class="infoHover">The name of the player. Ordered from left to right, top to bottom.</span></p><br>-->
+                    <!--<label><input id="bestRankSort" value="bestRank" type="radio" name="oneDimSort"><span>Rank</span></label>-->
+                    <!--<p class="infoBox">?<span class="infoHover">Best rank the player achieved between 2009 and 2015. Ordered from left to right, top to bottom.</span></p><br>-->
+                    <!--<label><input id="pageViewsSort" value="pageViews" type="radio" name="oneDimSort"><span>Page-views</span></label>-->
+                    <!--<p class="infoBox">?<span class="infoHover">Total number of Wikipedia page-views received between 2009 and 2015 while the player was active. Ordered from left to right, top to bottom.</span></p><br>-->
+                    <!--<label><input id="modelPredictionSort" value="modelPrediction" type="radio" name="oneDimSort"><span>Model</span></label>-->
+                    <!--<p class="infoBox">?<span class="infoHover">Total number of Wikipedia page-views predicted between 2009 and 2015 while the player was active. Ordered from left to right, top to bottom.</span></p><br>-->
+                    <!--<label><input id="totalYearsSort" value="totalYears" type="radio" name="oneDimSort"><span>Years</span></label>-->
+                    <!--<p class="infoBox">?<span class="infoHover">Number of years the player was professionally active. Ordered from left to right, top to bottom.</span></p><br>-->
+                <!--</form><br>-->
+                <!--<nav id="scatter">-->
+                    <!--<h3>Comparing</h3>-->
+                    <!--<h5>Horizontal</h5>-->
+                    <!--<form id="uiScatterX">-->
+                        <!--<label><input id="bestRankX" value="rank" type="radio" name="xScatter" checked="checked"><span>Rank</span></label>-->
+                        <!--<p class="infoBox">?<span class="infoHover">Best rank the player achieved between 2009 and 2015.</span></p><br>-->
+                        <!--<label><input id="totalPageviewsX" value="pageviews" type="radio" name="xScatter"><span>Page-views</span></label>-->
+                        <!--<p class="infoBox">?<span class="infoHover">Total number of Wikipedia page-views received between 2009 and 2015 while the player was active.</span></p><br>-->
+                        <!--<label><input id="totalModelX" value="model" type="radio" name="xScatter"><span>Model</span></label>-->
+                        <!--<p class="infoBox">?<span class="infoHover">Total number of Wikipedia page-views predicted between 2009 and 2015 while the player was active.</span></p><br>-->
+                        <!--<label><input id="totalYearsX" value="years" type="radio" name="xScatter"><span>Years</span></label>-->
+                        <!--<p class="infoBox">?<span class="infoHover">Number of years the player was professionally active.</span></p><br>-->
+                    <!--</form>-->
+                    <!--<br>-->
+                    <!--<h5>Vertical</h5>-->
+                    <!--<form id="uiScatterY">-->
+                        <!--<label><input id="bestRankY" value="rank" type="radio" name="yScatter"><span>Rank</span></label>-->
+                        <!--<p class="infoBox">?<span class="infoHover">Best rank the player achieved between 2009 and 2015.</span></p><br>-->
+                        <!--<label><input id="totalPageviewsY" value="pageviews" type="radio" name="yScatter" checked="checked"><span>Page-views</span></label>-->
+                        <!--<p class="infoBox">?<span class="infoHover">Total number of Wikipedia page-views received between 2009 and 2015 while the player was active.</span></p><br>-->
+                        <!--<label><input id="totalModelY" value="model" type="radio" name="yScatter"><span>Model</span></label>-->
+                        <!--<p class="infoBox">?<span class="infoHover">Total number of Wikipedia page-views predicted between 2009 and 2015 while the player was active.</span></p><br>-->
+                        <!--<label><input id="totalYearsY" value="years" type="radio" name="yScatter"><span>Years</span></label>-->
+                        <!--<p class="infoBox">?<span class="infoHover">Number of years the player was professionally active.</span></p><br>-->
+                    <!--</form>-->
+                    <!--<h5>Zoom</h5>-->
+                    <!--<label><input type="radio" class="zooming" name="zoom" value="zoomOut" checked="checked"><span style="padding-right:26px;">Out</span></label><br>-->
+                    <!--<label><input type="radio" class="zooming" name="zoom" value="zoomIn"><span style="padding-right:26px;">In</span></label>-->
+                    <!--<div><br></div>-->
+                <!--</nav>-->
+                <!--<nav id="shareButtons">-->
+                    <!--<h3>Share</h3>-->
+                    <!--<a target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=http%3A//untangling-tennis.net/tool">Facebook</a>-->
+                    <!--<br>-->
+                    <!--<a target="_blank" href="https://twitter.com/home?status=An%20interactive%20visual%20and%20data%20analytic%20exploration%20of%20success%20in%20tennis%3A%20http%3A//untangling-tennis.net/tool">Twitter</a>-->
+                    <!--<div><br></div>-->
+                <!--</nav>-->
+                <!--<div><br></div>-->
+            <!--</nav></div>-->
+    </div>
     <script type="text/javascript" language="javascript"
         data-main="js/main" src="js/third_party/require.js">
     </script>

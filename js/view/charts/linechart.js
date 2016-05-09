@@ -1,153 +1,205 @@
 define([
   'backbone',
   'jquery',
-  'd3',
-  'view/common/panel',
-  'd3-legend'
-
-], function (Backbone, $, d3, Panel) {
-  var LineChart = Panel.extend({
-    className : 'ag-panel linechart',
-
-    getTitle : function () {
-      return this.title;
+  'd3'
+], function (Backbone, $, d3) {
+  var LineChart = Backbone.View.extend({
+    initialize : function (opts) {
+      this.data = opts.data.berkeley;
+      this.$el.appendTo(opts.rootView.$el);
+      this.linchartData = [];
     },
 
-    initialize : function (opts) {
-      var self = this;
-      this.margin = {top: 20, right: 80, bottom: 30, left: 50};
-      this.title = opts.title;
-      this.data = opts.data || {};
-      this.root = opts.rootView;
-      this.$el.width(opts.w);
-      this.$el.height(opts.h);
-      Panel.prototype.initialize.call(this);
-      this.$el.appendTo(this.root.$el);
-      d3.select(window).on('resize', function () {
-        self.resize(self);
+    chart : function(elem) {
+      var color, defs, height, line, margin, maxDays, minDays, svg, width, x, xAxis, y, yAxis, zoom;
+      margin = {
+        top: 20,
+        right: 100,
+        bottom: 50,
+        left: 50
+      };
+
+      width = 960 - margin.left - margin.right;
+      height = 500 - margin.top - margin.bottom;
+      maxDays = 50;
+      minDays = 4;
+      x = d3.scale.linear().range([0, width]);
+      y = d3.scale.linear().range([height, 0]);
+      color = d3.scale.category10();
+      xAxis = d3.svg.axis().scale(x).tickFormat(function(d) {
+        //console.log(d);
+        if (Math.floor(d) !== d) {
+
+        } else {
+          return 'day ' + d;
+        }
+      }).orient("bottom");
+
+      yAxis = d3.svg.axis().scale(y).orient("left");
+      line = d3.svg.line().interpolate("monotone").x(function(d) {
+        //console.log(d);
+        return x(d.day);
+      }).y(function(d) {
+        return y(d.temp);
       });
 
-      //chart elems
-      this.x = d3.time.scale();
-      // this.x = d3.time.scale().domain([opts.data.date_array[0], opts.data.date_array[500]]);
-      this.y = d3.scale.linear().domain([0, 500]);
+      zoom = d3.behavior.zoom().x(x).scaleExtent([1, 2]).on('zoom', function() {
+        var tx, ty;
+        tx = d3.event.translate[0];
+        ty = d3.event.translate[1];
+        tx = Math.min(1, Math.max(tx, width - Math.round(x(maxDays) - x(1)), width - Math.round(x(maxDays) - x(1)) * d3.event.scale));
+        zoom.translate([tx, ty]);
+        svg.select('.x.axis').call(xAxis);
+        svg.selectAll('.line').attr("d", function(d) {
+          return line(d.temps);
+        }).style("stroke", function(d) {
+          return color(d.name);
+        });
+        return svg.selectAll('circle.dot').attr('cy', function(d) {
+          return y(d.temp);
+        }).attr('cx', function(d) {
+          return x(d.day);
+        }).attr('r', 5);
+      });
 
-      this.xAxis = d3.svg.axis().scale(this.x).orient("bottom");
-      this.yAxis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
-      this.color = d3.scale.ordinal()
-        .domain(this.citystrs)
-        .range([ "green", "red", "blue", "orange", "purple"]);
-    },
-
-    draw : function () {
-      var width = +this.$container.width()
-        , width = width - this.margin.left - this.margin.right
-        , height = +this.$el.height() - +this.$header.outerHeight(true) - 15
-        , height = height - this.margin.top - this.margin.bottom
-        , self = this
-        ;
-      this.x.range([0, width]);
-      this.y.range([height, 0]);
-
-      this.svg = d3.select(this.el).select("div.panel-body").append("svg")
-        .attr("width", width + this.margin.left + this.margin.right)
-        .attr("height", height + this.margin.top + this.margin.bottom)
+      svg = d3.select(elem).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
-        ;
-      this.svg.append("g")
-        .attr("class", "legendOrdinal")
-        .attr("transform", "translate(" + width +",20)");
-
-      var legendOrdinal = d3.legend.color()
-        .shape("path", d3.svg.symbol().type("triangle-up").size(150)())
-        .shapePadding(10)
-        .scale(self.color);
-
-      this.xa = this.svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(this.xAxis);
-
-      this.svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      svg.append("rect")
+        .attr('class', 'zoom-panel')
+        .attr("width", width)
+        .attr("height", height)
+        .call(zoom);
+      defs = svg.append('svg')
+        .attr('width', 0)
+        .attr('height', 0)
+        .append('defs');
+      defs.append('clipPath')
+        .attr('id', 'clipper')
+        .append('rect').attr('x', 0)
+        .attr('y', 0).attr('width', width)
+        .attr('height', height);
+      svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+      svg.append("g")
         .attr("class", "y axis")
-        .call(this.yAxis)
-        .append("text")
+        .attr("transform", "translate(0,0)")
+        .call(yAxis).append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 6)
+        .attr("y", -40).attr('x', -180)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Value")
+        .text("Temperature");
 
-      this.svg.select(".legendOrdinal")
-        .call(legendOrdinal);
-
-      this.city  = this.svg.selectAll(".city");
-    },
-
-    citystrs : ['Guangzhou', 'Shanghai', 'Beijing', 'Chengdu', 'Shenyang'],
-    change : function (timestammp) {
-      var self = this
-        ;
-      var from = new Date($('#from').val());
-      var from_index = this.getIndex(from);
-      var to = new Date($('#to').val())
-      var cities = this.getLineChartData(from_index , this.getIndex(timestammp));
-      // console.log(timestammp)
-      var line = d3.svg.line()
-        .interpolate("basis")
-        .x(function(d) { return self.x(d.time); })
-        .y(function(d) { return self.y(d.value); });
-
-      this.x.domain([from, to]);
-
-      this.xa.call(this.xAxis);
-
-      this.color.domain(this.citystrs);
-      this.city.remove();
-      this.city = this.svg.selectAll(".city").data(cities)
-
-      this.city.enter().append("g")
-        .attr("class", "city");
-
-      this.city.append("path")
-        .attr("class", "line")
-        .attr("d", function(d) { return line(d.values); })
-        .attr("opacity", 0.5)
-        .style("stroke", function(d) { return self.color(d.name); });
-
-      this.city.append("text")
-        .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-        .attr("transform",
-          function(d) {
-            return "translate(" + self.x(d.value.time) + "," + self.y(d.value.value) + ")"; })
-        .attr("x", 3)
-        .attr("dy", ".35em")
-        .attr("fill", function(d) { return self.color(d.name); } )
-        .text(function(d) { return d.name; });
-    },
-
-    resize : function (self) {
-    },
-
-    getLineChartData : function (first, index) {
-      var data = [];
-      var self = this;;
-      var last = index === first ? index + 1 : index;
-      this.citystrs.forEach(function (name, index) {
-        temp =  {name : name};
-        temp.values = self.data.city_data[index].value.slice(first, last);
-        data.push(temp)
+      //compute the maxday minday and maxtemp and mintemp for scale extent
+      return function(data) {
+      //console.log(data)
+      var city, cityEnter;
+      maxDays = d3.max(data, function(m) {
+        return d3.max(m.temps, function(d) {
+          return d.day;
+        });
       });
-      return data;
-    },
+      //console.log(maxDays);
+      x.domain([1, maxDays]);
+      y.domain([
+        d3.min(data, function(d) {
+          return d3.min(d.temps, function(t) {
+            return t.temp;
+          });
+        }), d3.max(data, function(d) {
+          return d3.max(d.temps, function(t) {
+            return t.temp;
+          });
+        })
+      ]);
 
-    getIndex : function (time) {
-      var idx = this.data.date_array_number.indexOf(+time);
-      return idx;
-      // return this.data.date_array.indexOf(new Date(time));
+      zoom.scaleExtent([1, maxDays / minDays]);
+      svg.selectAll('.x.axis').transition().duration(500).call(xAxis);
+      svg.selectAll('.y.axis').transition().duration(500).call(yAxis);
+      city = svg.selectAll(".city").data(data, function(c) {
+        return c.id;
+      });
+      //console.log(city);
+      cityEnter = city.enter().append("g").attr("class", "city");
+      cityEnter.append("path").attr('clip-path', 'url(#clipper)').attr("class", "line");
+      city.select('path').transition().duration(500).attr("d", function(d) {
+        return line(d.temps);
+      }).style("stroke", function(d) {
+        return color(d.name);
+      });
+
+      cityEnter.append('g')
+        .attr('class', 'dots')
+        .attr('clip-path', 'url(#clipper)')
+        .selectAll('circle')
+        .data(function(d) {
+          //console.log(d);
+          return d.temps;
+        }).enter().append('circle').attr('class', 'dot');
+      city.select('.dots').style('stroke', function(d) {
+        return color(d.name);
+      }).selectAll('circle').transition().duration(500).attr('cy', function(d) {
+        //console.log(d.temp);
+        return y(d.temp);
+      }).attr('cx', function(d) {
+        return x(d.day);
+      }).attr('r', 5);
+      cityEnter.append("text").attr('class', 'city-name');
+      city.select("text.city-name").attr("x", width + 20).attr("y", function(d, i) {
+        return i * 20;
+      }).attr("dy", ".35em").text(function(d) {
+        return d.name;
+      });
+      cityEnter.append('circle').attr('class', 'city-dot');
+      city.select('circle.city-dot').attr('cx', width + 10).attr('cy', function(d, i) {
+        return i * 20;
+      }).attr('r', 5).style('fill', function(d) {
+        return color(d.name);
+      });
+      city.exit().remove();
+      return zoom.x(x);
+    };
+  },
+
+    airDataGen : (function() {
+      return (function(id) {
+        return function() {
+          var data, j, nums, tempSeed;
+          //nums = Math.ceil(Math.random() * 11) + 4;
+          //tempSeed = Math.round(Math.random() * 30);
+          data = {
+            id: id,
+            name: "City " + "beijing",
+            temps: (function() {
+              var results;
+              results = [];
+              for (j = 1; j < 11; j++) {
+                if(j==1){
+                  continue;
+                }
+                results.push({
+                  day: j,
+                  temp: Math.round(Math.random() * 50)
+                });
+              }
+              return results;
+            })()
+          };
+          id = id + 1;
+          return data;
+        };
+      })(1);
+    })(),
+
+    render : function () {
+      this.linchartData.push(this.airDataGen());
+      this.chart(this.el)(this.linchartData);
     }
-
-  });
+  })
   return LineChart;
 });

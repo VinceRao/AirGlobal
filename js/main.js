@@ -1,7 +1,7 @@
 'use stick'
 
 require.config({
-  //urlArgs: 'v=' + (((1+Math.random())*0x1000000)|0).toString(16).substring(1),
+  // urlArgs: 'v=' + (((1+Math.random())*0x1000000)|0).toString(16).substring(1),
   baseUrl : '.',
   paths : {
     view : 'js/view',
@@ -21,6 +21,7 @@ require.config({
     'chroniton-only' : 'js/third_party/chroniton-only',
     'chroniton-bundle' : 'js/third_party/chroniton-bundle',
     'isotope' : 'js/third_party/isotope.pkgd',
+    'fit-columns' : 'js/third_party/fit-columns',
 
     // Utilities
     'util' : 'js/util',

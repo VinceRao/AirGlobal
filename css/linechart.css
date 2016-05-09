@@ -1,19 +1,54 @@
 body {
-    font: 10px sans-serif;
+    padding: 10px 20px;
+    background: #eeeeee;
+    font-family: sans-serif;
+    /*text-align: center;*/
+    color: #777;
 }
-.axis path,
-.axis line {
+
+#main {
+    margin: 0 auto;
+}
+
+.note {
+    font-size: .8em;
+}
+
+button {
+    background: #f7f7f7;
+    border-radius: 4px;
+    font-size: 1.2em;
+    padding: 5px 8px 5px 8px;
+}
+
+.tool {
+    width: 200px;
+    margin: 0 auto;
+}
+
+svg .axis {
+    font-size: 8px;
+}
+svg .axis path,
+svg .axis line {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
 }
-
-.x.axis path {
-    display: none;
-}
-
-.line {
+svg .line {
     fill: none;
     stroke: steelblue;
-    stroke-width: 1.5px;
+    stroke-width: 5px;
+}
+svg .tick > line {
+    display: none;
+}
+svg rect.zoom-panel {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+svg .dot {
+    stroke-width: 2px;
+    fill: #fff;
 }

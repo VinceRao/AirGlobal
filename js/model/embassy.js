@@ -16,8 +16,7 @@ define([
                 self.finish();
 
             }
-            self.finish();
-            // d3.csv('Data/beijing_combined.csv', callback);
+            d3.csv('Data/beijing_combined.csv', callback);
             return this.load_def.promise();
         }
     });

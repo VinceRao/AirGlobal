@@ -8,7 +8,8 @@ define([
   'view/uschina',
   'model/berkeley',
   'model/embassy',
-  'view/charts/smallmultiple'
+  'view/charts/smallmultiple',
+  'view/charts/linechart'
 ], function (
   $,
   Backbone,
@@ -17,7 +18,8 @@ define([
   USChina,
   Berkeley,
   Embassy,
-  SmallMultiple
+  SmallMultiple,
+  LineChart
 ) {
   var Console = function () {
   };
@@ -74,8 +76,8 @@ define([
         // uschinaContainer.render();
         var small = new SmallMultiple(options);
         small.render();
-
-        
+          // var line = new LineChart(options);
+          // line.render();
       });
     }
   };
