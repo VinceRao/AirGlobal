@@ -34,7 +34,6 @@ define([
             var defer_embassy = options.data.embassy.load();
 
       $.when(defer_berkeley, defer_embassy).done(function () {
-          options.data.embassy.city_map = options.data.berkeley.city_map;
           uschinaContainer = new USChina({root : options.rootView, data : options.data})
           uschinaContainer.render();
       });

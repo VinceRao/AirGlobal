@@ -42,7 +42,10 @@ define([
 
       this.path = d3.geo.path()
         .projection(this.proj);
-
+      var temp = d3.select('#chinamap').selectAll("svg");
+      if(temp.length > 0){
+        temp.remove();
+      }
       this.map = d3.select('#chinamap').append("svg")
         .attr("width", width)
         .attr("height", height);

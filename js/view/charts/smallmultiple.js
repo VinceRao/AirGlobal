@@ -10,10 +10,6 @@ define([
         this.root =  opts;
         // this.$el.appendTo(opts.rootView.$el);
         this.$el= $('#smallmultiple');
-        this.$el.append("<div id='filter'></div>");
-        this.$el.append("<div class='grid'></div>");
-        this.$grid = $(".grid");
-        this.$grid.css('overflow', 'scroll');
         this.curAttr;
         this.max_array = [];
         this.min_array = [];
@@ -27,8 +23,11 @@ define([
           r = 50;
 
         // this.$filter.append(_.template(tmpl))
-        var div = d3.select(".grid").selectAll("div")
-          .data(self.data.getAllCities())
+        var div = d3.select("#smallmultiple").selectAll("div");
+        if(div.length > 0){
+          div.remove();
+        }
+        div = d3.select("#smallmultiple").selectAll("div").data(self.data.getAllCities())
           .enter().append("div")
           .attr("class", 'chart');
 
@@ -133,7 +132,8 @@ define([
         pie.startAngle(0);
 
         var pie2 = function (d){
-          return pie(self.data.getAllDayForCity(d));
+          var array = self.data.getAllDayForCity(d);
+          return pie(array);
         };
 
         var paths = svg.selectAll("path")
@@ -186,7 +186,7 @@ define([
               return "";
             });
           })
-        $('.grid').isotope({
+        $("#smallmultiple").isotope({
           itemSelector: '.chart',
           layoutMode: 'fitRows',
           getSortData: {
@@ -202,6 +202,12 @@ define([
             },
           }
         });
+        $("#smallmultiple").isotope('reloadItems');
+        $("#smallmultiple").isotope('reloadItems');
+        $('#smallmultiple').isotope({
+          sortBy: 'name',
+          sortAscending: true
+        });
       },
 
       sorttByMin : function(){
@@ -215,7 +221,7 @@ define([
           var value = $(this.parentElement).find('.min').text()
           return self.data.getColor(+value);
         })
-        this.$grid.isotope({
+        $('#smallmultiple').isotope({
           sortBy: 'min',
           sortAscending: true
         });
@@ -232,7 +238,7 @@ define([
           var value = $(this.parentElement).find('.max').text()
           return self.data.getColor(+value);
         })
-        this.$grid.isotope({
+        $('#smallmultiple').isotope({
           sortBy: 'name',
           sortAscending: true
         });
@@ -249,7 +255,7 @@ define([
           var value = $(this.parentElement).find('.max').text()
           return self.data.getColor(+value);
         })
-        this.$grid.isotope({
+        $('#smallmultiple').isotope({
           sortBy: 'max',
           sortAscending: false
         });
@@ -266,7 +272,7 @@ define([
           var value = $(this.parentElement).find('.med').text()
           return self.data.getColor(+value);
         })
-        this.$grid.isotope({
+        $('#smallmultiple').isotope({
           sortBy: 'med',
           sortAscending: false
         });
@@ -274,7 +280,7 @@ define([
 
       f : function (range_id) {
         var self = this;
-        $('.grid').isotope({
+        $('#smallmultiple').isotope({
           filter: function (e) {
             var target = e;
             if (e === 0){
@@ -317,7 +323,7 @@ define([
 
       search : function (cities) {
         var self = this;
-        $('.grid').isotope({
+        $('#smallmultiple').isotope({
           filter: function (e) {
             var target = e;
             if (e === 0){
