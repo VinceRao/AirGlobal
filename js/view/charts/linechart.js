@@ -244,7 +244,7 @@ define([
 
     listenRemoveCity : function(cityName){
       for(var i = 0; i<this.linchartData.length;i++){
-        if(this.linchartData[i].name=="City "+cityName){
+        if(this.linchartData[i].name==cityName){
           this.linchartData.splice(i,1);
           return this.chart(this.el)(this.linchartData);
         }
