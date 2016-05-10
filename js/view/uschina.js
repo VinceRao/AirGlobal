@@ -32,6 +32,7 @@ define([
       $( "#from" ).datepicker({
         defaultDate: "+1w",
         changeMonth: true,
+        changeYear: true,
         numberOfMonths: 3,
         defaultDate : self.data.getDateString(self.data.start),
         minDate : self.data.getDateString(self.data.start),
@@ -48,6 +49,7 @@ define([
       $( "#to" ).datepicker({
         defaultDate: "+1w",
         changeMonth: true,
+        changeYear: true,
         numberOfMonths: 3,
         defaultDate : self.data.getDateString(self.data.start),
         minDate : self.data.getDateString(self.data.start),
