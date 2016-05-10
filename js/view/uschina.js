@@ -30,7 +30,7 @@ define([
       this.chineseMap = new ChineseMap(this);
       $.when(this.chineseMap.draw()).done(function () {
         self.smallmultiple.render();
-        // self.linechart.render();
+        self.linechart.render();
       });
     },
 
