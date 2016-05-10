@@ -92,10 +92,25 @@ define([
         }).attr('r', 3).on('mouseover',function(d){
           var day = self.showSpecificDate(d.day);
           var pm = "PM: " + d.temp;
+          var airColor;
+          if(d.temp<=50){
+            airColor = "green";
+          }else if(d.temp<=100){
+            airColor = "yellow";
+          }else if(d.temp<=150){
+            airColor = "orange";
+          }else if(d.temp<=200){
+            airColor = "red";
+          }else if(d.temp<=300){
+            airColor = "purple";
+          }else {
+            airColor = "maroon";
+          }
           div.transition()
             .duration(200)
             .style("opacity", .9);
-          div.html(day + "<br/>"  + pm)
+          div.html(day + "<br/>"  + pm).style("background-color",airColor)
+              .style("opacity", .5)
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
         }).on("mouseout", function() {
