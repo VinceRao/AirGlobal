@@ -36,7 +36,6 @@ define([
           .attr("height", (r + m) * 2)
           .append("g")
           .attr("transform", "translate(" + (r + m) + "," + (r + m) + ")")
-
         var cities = svg.append("text")
           .attr("dy", "-3px")
           .attr("dx", "0px")
@@ -356,12 +355,12 @@ define([
             var citynanme = $(target).find('text.cityname').text();
             var x = +$(target).find(self.curAttrClass).text();
             var result;
-            if (cities.length < 1){
-              return true;
-            } else if (cities.length === 1 && cities[0].trim() === ""){
-              return true;
-            }
             result = cities.indexOf(citynanme) > -1 ? true : false;
+            if (cities.length < 1){
+              result =  true;
+            } else if (cities.length === 1 && cities[0].trim() === ""){
+              result  = true;
+            }
             if(result){
               self.root.chineseMap.setCityColor(citynanme, x);
             }

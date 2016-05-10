@@ -76,7 +76,7 @@ define([
             var alltime = this.getAllDayForCity(city);
             var istart = this.getDayIndex(start);
             var iend = this.getDayIndex(end);
-            for(var i = istart; i <= iend; i++){
+            for(var i = istart - 1; i <= iend; i++){
                 var datapoint = {};
                 datapoint.date = this.getMicroseconds(i);
                 datapoint.value = alltime[i];
