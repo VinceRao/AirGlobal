@@ -7,7 +7,8 @@ define([
   'view/charts/linechart',
   'view/charts/smallmultiple',
   'view/control',
-  'text!template/chinaair.html'
+  'text!template/chinaair.html',
+  'jquery-ui'
 ], function (Backbone, $, ChineseMap, LineChart, Smallmultiple, Control, tmpl) {
   var USChina = Backbone.View.extend({
 
@@ -19,6 +20,7 @@ define([
       this.root = options.root;
       this.$el.html(this.template());
       this.$el.height('100%')
+
     },
 
     render : function () {
@@ -27,6 +29,39 @@ define([
       this.smallmultiple = new Smallmultiple(this);
       this.linechart = new LineChart(this);
 
+      $( "#from" ).datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        numberOfMonths: 3,
+        defaultDate : new Date(self.data.start),
+        minDate : new Date(self.data.start),
+        maxDate : new Date(self.data.end),
+        onClose: function( selectedDate ) {
+          $( "#to" ).datepicker( "option", "minDate", selectedDate );
+        },
+        onSelect: function (selectedDate, e) {
+
+        }
+      });
+      $( "#from" ).datepicker( "setDate", new Date(self.data.start) );
+
+      $( "#to" ).datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        numberOfMonths: 3,
+        defaultDate : new Date(self.data.start),
+        minDate : new Date(self.data.start),
+        maxDate : new Date(self.data.end),
+        onClose: function( selectedDate ) {
+          $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+        },
+        onSelect: function (selectedDate, e) {
+
+        }
+      });
+      $( "#to" ).datepicker( "setDate", new Date(self.data.end) );
+
+
       this.chineseMap = new ChineseMap(this);
       $.when(this.chineseMap.draw()).done(function () {
         self.smallmultiple.render();
@@ -34,9 +69,15 @@ define([
       });
     },
 
+    destory : function(){
+      $( "#to" ).datepicker("destroy");
+      $( "#from" ).datepicker("destroy");
+    },
+
     changeDataSource : function () {
-      this.data = this.options.data[$('#datasource').val()]
-      this.render()
+      this.data = this.options.data[$('#datasource').val()];
+      this.destory();
+      this.render();
     },
 
     sort : function () {
@@ -65,8 +106,7 @@ define([
     },
     
     search : function(){
-      var search_context = $('#search').val();
-      this.smallmultiple.search(search_context.split(','));
+      this.smallmultiple.search();
     },
 
     events : {

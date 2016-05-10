@@ -331,8 +331,10 @@ define([
         });
       },
 
-      search : function (cities) {
+      search : function () {
         var self = this;
+        var search_context = $('#search').val();
+        var cities = search_context.split(',');
         $('#smallmultiple').isotope({
           filter: function (e) {
             var target = e;
@@ -340,6 +342,7 @@ define([
               target = this;
             }
             var citynanme = $(target).find('text.cityname').text();
+            var x = +$(target).find(self.curAttrClass).text();
             var result;
             if (cities.length < 1){
               return true;
@@ -347,6 +350,12 @@ define([
               return true;
             }
             result = cities.indexOf(citynanme) > -1 ? true : false;
+            if(result){
+              self.root.chineseMap.setCityColor(citynanme, x);
+            }
+            else {
+              self.root.chineseMap.setCityColor(citynanme);
+            }
             return result;
           }
         });
