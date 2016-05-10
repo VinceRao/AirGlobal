@@ -218,8 +218,8 @@ define([
     showSpecificDate : function (d) {
       var date = this.data.getMicroseconds(d);
       var time = new Date(date);
-      daydate = (time.getMonth()+1).toString()+'/'
-          +(time.getDate()-1).toString()+'/'+time.getFullYear().toString();
+        daydate = (time.getMonth()+1).toString()+'/'
+            +(time.getDate()).toString()+'/'+time.getFullYear().toString();
       return daydate;
     },
 
