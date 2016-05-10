@@ -12,14 +12,14 @@ define([
         this.$el= $('#smallmultiple');
         this.$el.append("<div id='filter'></div>");
         this.$el.append("<div class='grid'></div>");
-        this.$filter = $("#filter");
         this.$grid = $(".grid");
         this.$grid.css('overflow', 'scroll');
         this.curAttr;
         this.max_array = [];
         this.min_array = [];
         this.med_array = [];
-        this.curAttrAry = this.med;
+        this.curAttrAry = this.med_array;
+        this.curAttrClass = '.med'
       },
       render : function () {
         var self = this;
@@ -73,15 +73,12 @@ define([
           .attr("text-anchor", "middle")
           .attr("font-size", "14")
           .attr("font-weight", "900")
+          .attr("display", "none")
           .text(function(d, i) {
             var max = +d3.max(self.data.getAllDayForCity(d));
             self.max_array[i] = max;
             return max.toFixed(2);
           });
-
-        this.curAttr = this.max;
-        this.curAttrAry = this.max_array;
-        self.root.chineseMap.reset(self.curAttrAry);
 
         this.min = svg.append("text")
           .attr("dx", "0px")
@@ -104,12 +101,16 @@ define([
           .attr("text-anchor", "middle")
           .attr("font-size", "14")
           .attr("font-weight", "900")
-          .attr("display", "none")
+          .attr("display", null)
           .text(function(d, i) {
             var med = +Math.median(self.data.getAllDayForCity(d));
             self.med_array[i] = med;
             return med.toFixed(2);
           });
+
+        this.curAttr = this.med;
+        this.curAttrAry = this.med_array;
+        self.root.chineseMap.reset(self.curAttrAry);
 
 
         this.rects.attr("fill", function () {
@@ -209,6 +210,7 @@ define([
         this.curAttr = this.min;
         this.curAttrAry = this.min_array;
         this.curAttr.attr("display", null);
+        this.curAttrClass = '.min'
         this.rects.attr("fill", function () {
           var value = $(this.parentElement).find('.min').text()
           return self.data.getColor(+value);
@@ -222,9 +224,10 @@ define([
       sorttByName : function(){
         var self = this;
         this.curAttr.attr("display", "none");
-        this.curAttr = this.max;
-        this.curAttrAry = this.max_array;
+        this.curAttr = this.med;
+        this.curAttrAry = this.med_array;
         this.curAttr.attr("display", null);
+        this.curAttrClass = '.med'
         this.rects.attr("fill", function () {
           var value = $(this.parentElement).find('.max').text()
           return self.data.getColor(+value);
@@ -241,6 +244,7 @@ define([
         this.curAttr = this.max;
         this.curAttrAry = this.max_array;
         this.curAttr.attr("display", null);
+        this.curAttrClass = '.max'
         this.rects.attr("fill", function () {
           var value = $(this.parentElement).find('.max').text()
           return self.data.getColor(+value);
@@ -257,6 +261,7 @@ define([
         this.curAttr = this.med;
         this.curAttrAry = this.med_array;
         this.curAttr.attr("display", null);
+        this.curAttrClass = '.med'
         this.rects.attr("fill", function () {
           var value = $(this.parentElement).find('.med').text()
           return self.data.getColor(+value);
@@ -275,7 +280,7 @@ define([
             if (e === 0){
               target = this;
             }
-            var x = +$(target).find('.max').text(),
+            var x = +$(target).find(self.curAttrClass).text(),
                 result;
             switch (+range_id){
               case 0:
@@ -309,6 +314,22 @@ define([
           }
         });
       },
+
+      search : function (cities) {
+        var self = this;
+        $('.grid').isotope({
+          filter: function (e) {
+            var target = e;
+            if (e === 0){
+              target = this;
+            }
+            var citynanme = $(target).find('text.cityname').text();
+            var result = cities.indexOf(citynanme) > -1 ? true : false;
+            console.info(result)
+            return result;
+          }
+        });
+      }
     });
     return SmallMultiple;
 });

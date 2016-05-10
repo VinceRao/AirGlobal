@@ -59,15 +59,21 @@ define([
       }
     },
     
-    hello : function () {
+    filterByRange : function () {
       var filter_id = $('#filter').val();
       this.smallmultiple.f(filter_id);
+    },
+    
+    search : function(){
+      var search_context = $('#search').val();
+      this.smallmultiple.search(search_context.split(','));
     },
 
     events : {
       'change #datasource' : 'changeDataSource',
       'change #sort' : 'sort',
-      'change #filter' : 'hello',
+      'change #filter' : 'filterByRange',
+      'change #search' : 'search',
     }
   });
   return USChina
