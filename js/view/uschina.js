@@ -13,8 +13,9 @@ define([
 
     // className: '',
     template : _.template(tmpl),
-    initialize : function (options) {
-      this.data = options.data.berkeley;
+    initialize : function (options) {;
+      this.options = options
+      this.data = options.data.embassy;
       this.root = options.root;
       this.$el.html(this.template());
       this.$el.height('100%')
@@ -28,9 +29,18 @@ define([
 
       this.chineseMap = new ChineseMap(this);
       $.when(this.chineseMap.draw()).done(function () {
-        self.smallmultiple.render();
+        // self.smallmultiple.render();
         self.linechart.render();
       });
+    },
+
+    changeDataSource : function () {
+      this.data = this.options.data[$('#datasource').val()]
+      this.render()
+    },
+
+    events : {
+      'change #datasource' : 'changeDataSource'
     }
   });
   return USChina
