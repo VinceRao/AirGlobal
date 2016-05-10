@@ -44,6 +44,9 @@ define([
           .attr("class", "cityname")
           .attr("text-anchor", "middle")
           .attr("font-size", "12")
+          .on('click', function (d) {
+            self.root.linechart.change(d);
+          })
           .text(function(d) { return d; });
 
         this.rects = svg.append('rect')

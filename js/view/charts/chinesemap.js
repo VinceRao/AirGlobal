@@ -78,7 +78,8 @@ define([
             });
           })
           .on('click', function (d) {
-            console.info(self.getCityEnglishName(d.id));
+            var eng_name = self.getCityEnglishName(d.id);
+            self.root.linechart.change(eng_name);
           })
           .on("mouseout", function() {
             self.tooltip.style("display", "none");
@@ -92,6 +93,29 @@ define([
             .append("path")
             .attr("d", self.path)
             .attr("id", function(d) {return d.id;})
+          self.municipalities.forEach(function (d) {
+            d3.select('#' + d)
+              .on("mouseover", function(d) {
+                var m = d3.mouse(d3.select('#chinamap').node());
+                self.tooltip.style("display", null)
+                  .style("left", m[0] + 10 + "px")
+                  .style("top", m[1] - 10 + "px");
+                $("#tt_county").text(function () {
+                  var name = self.getCityEnglishName(d.id);
+                  if(!name){
+                    name = d.properties.name;
+                  }
+                  return name;
+                });
+              })
+              .on('click', function (d) {
+                var eng_name = self.getCityEnglishName(d.id);
+                self.root.linechart.change(eng_name);
+              })
+              .on("mouseout", function() {
+                self.tooltip.style("display", "none");
+              });
+          });
           $def.resolve();
         });
       });

@@ -5,8 +5,8 @@ define([
 ], function (Backbone, $, d3) {
   var LineChart = Backbone.View.extend({
     initialize : function (opts) {
-      this.data = opts.data.berkeley;
-      this.$el.appendTo(opts.rootView.$el);
+      this.data = opts.data;
+      this.$el = $('#linechart')
       this.linchartData = [];
       this.id = 1;
       this.daydate;
@@ -26,8 +26,8 @@ define([
         .style("opacity", 0);
 
       var self = this;
-      width = 1500 - margin.left - margin.right;
-      height = 400 - margin.top - margin.bottom;
+      width = +this.$el.width() - margin.left - margin.right;
+      height = +this.$el.height() - margin.top - margin.bottom;
       maxDays = 50;
       minDays = 4;
       x = d3.scale.linear().range([0, width]);
@@ -216,10 +216,9 @@ define([
     },
 
     showSpecificDate : function (d) {
-      var date = this.data.getMicroseconds(d);
+      var date = this.data.getMicroseconds(d-1);
       var time = new Date(date);
-      daydate = (time.getMonth()+1).toString()+'/'
-        +(time.getDate()).toString()+'/'+time.getFullYear().toString();
+      daydate = new Intl.DateTimeFormat('en-US').format(time);
       return daydate;
     },
 
@@ -235,29 +234,42 @@ define([
         }
       });
     },
+    
+    change : function (cityName) {
+      for(var i = 0; i<this.linchartData.length;i++){
+        if(this.linchartData[i].name==cityName){
+          this.linchartData.splice(i,1);
+          return this.chart('#linechart')(this.linchartData);
+        }
+      }
+      var data = this.formateDataForDrawLine(cityName);
+      this.linchartData.push(data);
+      return this.chart('#linechart')(this.linchartData);
+    },
 
     listenAddCity : function(cityName){
       var data = this.formateDataForDrawLine(cityName);
       this.linchartData.push(data);
-      return this.chart(this.el)(this.linchartData);
+      return this.chart('#linechart')(this.linchartData);
     },
 
     listenRemoveCity : function(cityName){
       for(var i = 0; i<this.linchartData.length;i++){
         if(this.linchartData[i].name==cityName){
           this.linchartData.splice(i,1);
-          return this.chart(this.el)(this.linchartData);
+          return this.chart('#linechart')(this.linchartData);
         }
       }
     },
 
 
     render : function () {
-      var data = this.formateDataForDrawLine("Shanghai");
+      var data = this.formateDataForDrawLine("Beijing");
       this.linchartData.push(data);
+      console.info(this.linchartData);
       //this.linchartData.push(aa);
-      this.chart(this.el)(this.linchartData);
-      this.drawLineByCity("Beijing");
+      this.chart('#linechart')(this.linchartData);
+      // this.drawLineByCity("Beijing");
     }
   })
   return LineChart;

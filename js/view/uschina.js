@@ -23,11 +23,13 @@ define([
     render : function () {
       var self = this;
       this.$el.appendTo(this.root.el);
-      this.smallmultiple = new Smallmultiple(this)
+      this.smallmultiple = new Smallmultiple(this);
+      this.linechart = new LineChart(this);
 
       this.chineseMap = new ChineseMap(this);
       $.when(this.chineseMap.draw()).done(function () {
         self.smallmultiple.render();
+        self.linechart.render();
       });
     }
   });
