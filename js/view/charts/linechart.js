@@ -9,7 +9,7 @@ define([
       this.$el.appendTo(opts.rootView.$el);
       this.linchartData = [];
       this.id = 1;
-      this.dayIndex = 0;
+      this.daydate;
     },
 
     chart : function(elem) {
@@ -20,6 +20,11 @@ define([
         bottom: 50,
         left: 50
       };
+
+      var div = d3.select("body").append("div")
+          .attr("class", "tooltipline")
+          .style("opacity", 0);
+
       var self = this;
       width = 1500 - margin.left - margin.right;
       height = 400 - margin.top - margin.bottom;
@@ -29,15 +34,14 @@ define([
       y = d3.scale.linear().range([height, 0]);
       color = d3.scale.category10();
       xAxis = d3.svg.axis().scale(x).tickFormat(function(d) {
-        self.dayIndex = self.dayIndex + 1;
         if (Math.floor(d) !== d) {
 
         } else {
-          var date = self.data.getMicroseconds(d);
-          time = new Date(date);
-          var daydate = (time.getMonth()+1).toString()+'/'
-              +(time.getDate()-1).toString()+'/'+time.getFullYear().toString();
-          return  daydate;
+          //var date = self.data.getMicroseconds(d);
+          //var time = new Date(date);
+          //daydate = (time.getMonth()+1).toString()+'/'
+          //    +(time.getDate()-1).toString()+'/'+time.getFullYear().toString();
+          return  self.showSpecificDate(d);
         }
       }).orient("bottom");
 
@@ -64,7 +68,20 @@ define([
           return y(d.temp);
         }).attr('cx', function(d) {
           return x(d.day);
-        }).attr('r', 2);
+        }).attr('r', 3).on('mouseover',function(d){
+          var day = self.showSpecificDate(d.day);
+          var pm = "PM: " + d.temp;
+          div.transition()
+              .duration(200)
+              .style("opacity", .9);
+          div.html(day + "<br/>"  + pm)
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+        }).on("mouseout", function() {
+          div.transition()
+              .duration(500)
+              .style("opacity", 0);
+        });
       });
 
       var tempro = d3.select(elem).selectAll("svg");
@@ -102,6 +119,7 @@ define([
           .style("text-anchor", "center")
           .style("font-size","13px")
           .text("Air Pollution PM25");
+
 
       //compute the maxday minday and maxtemp and mintemp for scale extent
       return function(data) {
@@ -143,17 +161,15 @@ define([
             .attr('clip-path', 'url(#clipper)')
             .selectAll('circle')
             .data(function(d) {
-              //console.log(d);
               return d.temps;
             }).enter().append('circle').attr('class', 'dot');
         city.select('.dots').style('stroke', function(d) {
           return color(d.name);
         }).selectAll('circle').transition().duration(500).attr('cy', function(d) {
-          //console.log(d.temp);
           return y(d.temp);
         }).attr('cx', function(d) {
           return x(d.day);
-        }).attr('r', 2);
+        }).attr('r', 3);
         cityEnter.append("text").attr('class', 'city-name');
         city.select("text.city-name").attr("x", width + 20).attr("y", function(d, i) {
           return i * 20;
@@ -163,7 +179,7 @@ define([
         cityEnter.append('circle').attr('class', 'city-dot');
         city.select('circle.city-dot').attr('cx', width + 10).attr('cy', function(d, i) {
           return i * 20;
-        }).attr('r', 2).style('fill', function(d) {
+        }).attr('r', 3).style('fill', function(d) {
           return color(d.name);
         });
         city.exit().remove();
@@ -197,6 +213,14 @@ define([
         });
       }
       return results;
+    },
+
+    showSpecificDate : function (d) {
+      var date = this.data.getMicroseconds(d);
+      var time = new Date(date);
+      daydate = (time.getMonth()+1).toString()+'/'
+          +(time.getDate()-1).toString()+'/'+time.getFullYear().toString();
+      return daydate;
     },
 
     drawLineByCity : function (cityName){
