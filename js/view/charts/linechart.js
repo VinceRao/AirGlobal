@@ -43,7 +43,6 @@ define([
 
       yAxis = d3.svg.axis().scale(y).orient("left");
       line = d3.svg.line().interpolate("monotone").x(function(d) {
-        //console.log(d);
         return x(d.day);
       }).y(function(d) {
         return y(d.temp);
@@ -100,19 +99,18 @@ define([
           .attr("transform", "rotate(-90)")
           .attr("y", -40).attr('x', -180)
           .attr("dy", ".71em")
-          .style("text-anchor", "end")
+          .style("text-anchor", "center")
+          .style("font-size","13px")
           .text("Air Pollution PM25");
 
       //compute the maxday minday and maxtemp and mintemp for scale extent
       return function(data) {
-        //console.log(data)
         var city, cityEnter;
         maxDays = d3.max(data, function(m) {
           return d3.max(m.temps, function(d) {
             return d.day;
           });
         });
-        //console.log(maxDays);
         x.domain([1, maxDays]);
         y.domain([
           d3.min(data, function(d) {
@@ -132,7 +130,6 @@ define([
         city = svg.selectAll(".city").data(data, function(c) {
           return c.id;
         });
-        //console.log(city);
         cityEnter = city.enter().append("g").attr("class", "city");
         cityEnter.append("path").attr('clip-path', 'url(#clipper)').attr("class", "line");
         city.select('path').transition().duration(500).attr("d", function(d) {
@@ -205,7 +202,6 @@ define([
     drawLineByCity : function (cityName){
       var self = this;
       var data = self.formateDataForDrawLine(cityName);
-      console.log(data);
       cityCheck = document.getElementById(cityName);
       cityCheck.addEventListener('change', function(){
         if(cityCheck.checked){
@@ -233,8 +229,7 @@ define([
 
 
     render : function () {
-      var data = this.formateDataForDrawLine("Qionghai");
-      //console.log("I adata);
+      var data = this.formateDataForDrawLine("Shanghai");
       this.linchartData.push(data);
       //this.linchartData.push(aa);
       this.chart(this.el)(this.linchartData);
