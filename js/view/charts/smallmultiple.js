@@ -74,7 +74,7 @@ define([
           .attr("font-weight", "900")
           .attr("display", "none")
           .text(function(d, i) {
-            var max = +d3.max(self.data.getAllDayForCity(d));
+            var max = +d3.max(self.getCityValueArray(d));
             self.max_array[i] = max;
             return max.toFixed(2);
           });
@@ -88,7 +88,7 @@ define([
           .attr("font-weight", "900")
           .attr("display", "none")
           .text(function(d, i) {
-            var min = +d3.min(self.data.getAllDayForCity(d));
+            var min = +d3.min(self.getCityValueArray(d));
             self.min_array[i] = min;
             return min.toFixed(2);
           });
@@ -102,7 +102,7 @@ define([
           .attr("font-weight", "900")
           .attr("display", null)
           .text(function(d, i) {
-            var med = +Math.median(self.data.getAllDayForCity(d));
+            var med = +Math.median(self.getCityValueArray(d));
             self.med_array[i] = med;
             return med.toFixed(2);
           });
@@ -126,13 +126,13 @@ define([
 
         var pie = d3.layout.pie();
         pie.sort(null);
-        pie.value(function () {
+        pie.value(function (d) {
           return 1;
         })
         pie.startAngle(0);
 
         var pie2 = function (d){
-          var array = self.data.getAllDayForCity(d);
+          var array = self.getCityData(d);
           return pie(array);
         };
 
@@ -143,8 +143,8 @@ define([
             .innerRadius(r/1.4)
             .outerRadius(r))
           .attr('name' , function(d,i){return i})
-          .style("fill", function(d, i) {
-            return self.data.getColor(+d.data); })
+          .style("fill", function(d) {
+            return self.data.getColor(+d.data.value); })
           .on('mouseover', function(d, i){
             paths.forEach(function (path) {
               var a = d3.select(path[i]);
@@ -153,17 +153,17 @@ define([
             });
             cur.attr("display", null)
               .text(function(d){
-              return self.data.getAllDayForCity(d)[i].toFixed(2);
+              return self.getCityValueArray(d)[i].toFixed(2);
             });
             self.curAttr.attr("display", "none");
             self.rects.attr("fill", function () {
               var value = $(this.parentElement).find('.value').text()
               return self.data.getColor(+value);
             })
-            times.text(function(d){
-              return new Intl.DateTimeFormat('en-US').format(new Date(self.data.getMicroseconds(i)));
+            times.text(function(){
+              return new Intl.DateTimeFormat('en-US').format(new Date(d.data.date));
             });
-            self.root.chineseMap.change(self.data.getMicroseconds(i));
+            self.root.chineseMap.change(d.data.date);
           })
 
           .on('mouseout', function (d, i) {
@@ -329,6 +329,18 @@ define([
             return result;
           }
         });
+      },
+
+      getCityData : function (cityname) {
+        var from = this.data.getMilliseconds($('#from').val());
+        var to = this.data.getMilliseconds($('#to').val());
+        return this.data.getOneCityInTimeRange(cityname, from, to);
+      },
+
+      getCityValueArray : function (cityname) {
+        var from_idx = this.data.getDayIndex(this.data.getMilliseconds($('#from').val()));
+        var to_idx = this.data.getDayIndex(this.data.getMilliseconds($('#to').val()));
+        return this.data.getAllDayForCity(cityname).slice(from_idx, to_idx + 1);
       },
 
       search : function () {

@@ -187,7 +187,18 @@ define([
         },
         getUTCMilliseconds : function(date_string){
             var date = date_string.split("/");
-            return Date.UTC(+date[2]+2000, +(date[0]-1), +date[1]);
+            if (+date[2] < 2000){
+                date[2] = +date[2] + 2000;
+            }
+            return Date.UTC(+date[2], +(date[0]-1), +date[1]);
+        },
+
+        getMilliseconds : function(date_string){
+            var date = date_string.split("/");
+            if (+date[2] < 2000){
+                date[2] = +date[2] + 2000;
+            }
+            return Date.UTC(+date[2], +(date[0]-1), +date[1]) ;
         },
 
         //given concentration calculate AQI
@@ -227,7 +238,17 @@ define([
             }else {
                 return "#663300";  //brown
             }
+        },
+        
+        getDateString : function (time) {
+           var date = new Date(time),
+             year = date.getUTCFullYear(),
+             month = date.getUTCMonth() + 1,
+             day = date.getUTCDate()
+            ;
+            return "{0}\/{1}\/{2}".format(month, day, year);
         }
+        
     });
 
     return Embassy;

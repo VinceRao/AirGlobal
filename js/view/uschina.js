@@ -33,33 +33,33 @@ define([
         defaultDate: "+1w",
         changeMonth: true,
         numberOfMonths: 3,
-        defaultDate : new Date(self.data.start),
-        minDate : new Date(self.data.start),
-        maxDate : new Date(self.data.end),
+        defaultDate : self.data.getDateString(self.data.start),
+        minDate : self.data.getDateString(self.data.start),
+        maxDate : self.data.getDateString(self.data.end),
         onClose: function( selectedDate ) {
           $( "#to" ).datepicker( "option", "minDate", selectedDate );
         },
         onSelect: function (selectedDate, e) {
-
+          self.smallmultiple.render();
         }
       });
-      $( "#from" ).datepicker( "setDate", new Date(self.data.start) );
+      $( "#from" ).datepicker( "setDate", self.data.getDateString(self.data.start) );
 
       $( "#to" ).datepicker({
         defaultDate: "+1w",
         changeMonth: true,
         numberOfMonths: 3,
-        defaultDate : new Date(self.data.start),
-        minDate : new Date(self.data.start),
-        maxDate : new Date(self.data.end),
+        defaultDate : self.data.getDateString(self.data.start),
+        minDate : self.data.getDateString(self.data.start),
+        maxDate : self.data.getDateString(self.data.end),
         onClose: function( selectedDate ) {
           $( "#from" ).datepicker( "option", "maxDate", selectedDate );
         },
         onSelect: function (selectedDate, e) {
-
+          self.smallmultiple.render();
         }
       });
-      $( "#to" ).datepicker( "setDate", new Date(self.data.end) );
+      $( "#to" ).datepicker( "setDate", self.data.getDateString(self.data.end) );
 
 
       this.chineseMap = new ChineseMap(this);

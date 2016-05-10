@@ -191,6 +191,10 @@ define([
             return this.end;
         },
 
+        getMilliseconds : function(date_string){
+            return +new Date(date_string);
+        },
+
         //given concentration calculate AQI
         getAQI: function(concentration){
             if(_.isNaN(concentration)){
@@ -228,6 +232,10 @@ define([
             }else {
                 return "#663300";  //brown
             }
+        },
+
+        getDateString : function (time) {
+            return new Date(time);
         }
     });
 
