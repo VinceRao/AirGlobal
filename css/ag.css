@@ -1,0 +1,69 @@
+html {
+    height: 100%; /* so we can set 100% height on divs */
+}
+
+body {
+    width: 1920px;
+    height: 1080px;
+
+}
+
+#ag-root {
+    overflow   : scroll;
+    min-width: 1280px;
+    min-height: 720px;
+    height: 100%;
+}
+
+.ag-panel {
+    position: relative;
+    float: left;
+    padding: 5px;
+    width: 50%;
+    height: 50%;
+}
+
+.chart {
+    float: left;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-top:0;
+    padding-left:0;
+}
+
+#navbar{
+    position: fixed;
+    overflow: scroll;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 15%;
+    background-color:black;
+    z-index: 5;
+    text-align: left;
+    color: white;
+    padding-top: 35px;
+}
+
+#smallmultiple {
+    padding-left: 15%;
+    width: 50%;
+    padding-bottom: 40%;
+}
+
+#chinamap{
+    position: fixed;
+    top: 0px;
+    left: 65%;
+    width: 35%;
+    height: 60%;
+}
+
+#linechart{
+    position: fixed;
+    top: 60%;
+    left: 15%;
+    width: 85%;
+    height: 40%;
+    background-color: #eeeeee;
+}
