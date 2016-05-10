@@ -177,7 +177,7 @@ define([
       var results = this.formateDataforDays(airData);
       data = {
         id: this.id,
-        name: "City " + city,
+        name: city,
         temps: results
       };
       this.id = this.id + 1;
