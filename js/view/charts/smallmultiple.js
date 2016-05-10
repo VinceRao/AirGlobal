@@ -202,23 +202,6 @@ define([
           }
         });
       },
-      events : {
-        'click .filter-attr' : 'setFilterAttr',
-        'click .filter-opt' : 'setFilterOpt',
-        'click .filter-opt' : 'setFilterOpt',
-        'click #search' : 'search',
-        'click #reset' : 'reset',
-        'click otpion.min' : 'sorttByMin',
-        'click otpion.name' : 'sorttByName',
-        'click otpion.max' : 'sorttByMax',
-        'click otpion.med' : 'sorttByMed',
-        'change #sort' : 'sort',
-
-      },
-
-      sort : function () {
-        console.info("got you")
-      },
 
       sorttByMin : function(){
         var self = this;
@@ -283,47 +266,49 @@ define([
           sortAscending: false
         });
       },
-      setFilterAttr : function(e) {
-        this.$filter.find('#attr-name').text(e.currentTarget.text);
-      },
-      setFilterOpt : function(e) {
-        this.$filter.find('#opt-name').text(e.currentTarget.text);
-      },
-      search : function(e) {
-        var attr = this.$filter.find('#attr-name').text(),
-            opt = this.$filter.find('#opt-name').text(),
-            value = this.$filter.find('input').val();
-        this.filter(attr, opt, value);
-      },
-      filter : function (attr, opt, value) {
+
+      f : function (range_id) {
         var self = this;
-        if(_.isNaN(+value)){
-          value = d3.max(this.data.getAllDayForCity(value)).toFixed();
-        }
         $('.grid').isotope({
           filter: function (e) {
             var target = e;
             if (e === 0){
               target = this;
             }
-            var number = $(target).find('.max').text(),
+            var x = +$(target).find('.max').text(),
                 result;
-            if(opt === 'Larger Than'){
-              result = parseFloat( number, 10 ) >= +value;
-            } else if (opt === 'Less Than'){
-              result = parseFloat( number, 10 ) <= +value;
-            } else {
-              result = parseFloat( number, 10 ) == +value;
+            switch (+range_id){
+              case 0:
+                result = true;
+                break;
+              case 1:
+                result = x >= 0 && x <= 50;
+                break;
+              case 2:
+                result = x >= 51 && x <= 100;
+                break;
+              case 3:
+                result = x >= 101 && x <= 150;
+                break;
+              case 4:
+                result = x >= 151 && x <= 200;
+                break;
+              case 5:
+                result = x >= 201 && x <= 300;
+                break;
+              case 6:
+                result = x >= 301 && x <= 500;
+                break;
+              case 7:
+                result = x >500;
+                break;
+              default:
+                result = false;
             }
             return result;
           }
         });
       },
-      reset : function () {
-        this.$grid.isotope({
-          filter: ''
-        });
-      }
     });
     return SmallMultiple;
 });

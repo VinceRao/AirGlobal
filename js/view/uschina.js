@@ -30,7 +30,7 @@ define([
       this.chineseMap = new ChineseMap(this);
       $.when(this.chineseMap.draw()).done(function () {
         self.smallmultiple.render();
-        self.linechart.render();
+        // self.linechart.render();
       });
     },
 
@@ -57,12 +57,17 @@ define([
         default:
           return;
       }
-
+    },
+    
+    hello : function () {
+      var filter_id = $('#filter').val();
+      this.smallmultiple.f(filter_id);
     },
 
     events : {
       'change #datasource' : 'changeDataSource',
-      'change #sort' : 'sort'
+      'change #sort' : 'sort',
+      'change #filter' : 'hello',
     }
   });
   return USChina
