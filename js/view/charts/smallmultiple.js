@@ -324,6 +324,9 @@ define([
               target = this;
             }
             var citynanme = $(target).find('text.cityname').text();
+            if (cities.length < 1){
+              return true;
+            }
             var result = cities.indexOf(citynanme) > -1 ? true : false;
             console.info(result)
             return result;
