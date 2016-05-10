@@ -5,55 +5,29 @@ define([
   'jquery',
   'view/charts/chinesemap',
   'view/charts/linechart',
+  'view/charts/smallmultiple',
   'view/control',
-], function (Backbone, $, ChineseMap, LineChart, Control) {
+  'text!template/chinaair.html'
+], function (Backbone, $, ChineseMap, LineChart, Smallmultiple, Control, tmpl) {
   var USChina = Backbone.View.extend({
 
-    className: 'uschina-container',
-
+    // className: '',
+    template : _.template(tmpl),
     initialize : function (options) {
-
+      this.data = options.data.berkeley;
       this.root = options.root;
+      this.$el.html(this.template());
       this.$el.height('100%')
-      this.chineseMap = new ChineseMap({
-        w : '800px',
-        h : '600px',
-        title : 'Chinese Map With PM2.5',
-        rootView : this,
-        data : options.data
-      });
-      this.lineChart = new LineChart({
-        w : '1000px',
-        h : '600px',
-        title : 'Five Major Cities Line Chart',
-        rootView : this,
-        data : options.data
-      });
-      
-      // this.lineChart2 = new LineChart({
-      //   w : '800px',
-      //   h : '300px',
-      //   title : 'Cusstom Line Chart',
-      //   rootView : this,
-      //   data : options.data
-      // });
-      // this.control = new Control({
-      //   w : '1000px',
-      //   h : '300px',
-      //   title : 'Control',
-      //   rootView : this,
-      //   data : options.data
-      // });
     },
 
     render : function () {
       var self = this;
       this.$el.appendTo(this.root.el);
-      a = this.chineseMap.draw();
-      this.lineChart.draw();
-      // this.lineChart2.draw()
-      $.when(a).done(function () {
-        self.control.draw();
+      this.smallmultiple = new Smallmultiple(this)
+
+      this.chineseMap = new ChineseMap(this);
+      $.when(this.chineseMap.draw()).done(function () {
+        self.smallmultiple.render();
       });
     }
   });

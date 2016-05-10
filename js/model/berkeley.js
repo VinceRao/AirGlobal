@@ -18,13 +18,16 @@ define([
             var callback = function (cities) {
                 var city_map = {};
                 var city_index = {};
+                var city_id_map = {};
                 cities.forEach(function (city, i) {
                     city_map[city.value] = city.id; //value is city name, id is an integer
+                    city_id_map[city.id] = city.value; //value is city name, id is an integer
                     city_index[city.value] = i;
 
                 });
                 self.city_map = city_map;
                 self.city_index = city_index;
+                self.city_id_map = city_id_map;
                 //console.log(Berkeley.city_map);
                 //console.log(Berkeley.city_index);
 
@@ -171,6 +174,10 @@ define([
         //get map id
         getMapID: function(cityname){
             return this.city_map[cityname];
+        },
+
+        getCityNameByID: function(id){
+            return this.city_id_map[id];
         },
 
         //get all city names

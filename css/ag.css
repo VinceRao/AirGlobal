@@ -31,24 +31,42 @@ body {
     padding-left:0;
 }
 
-#userInterface{
+#navbar{
     position: fixed;
     overflow: scroll;
     top: 0px;
-    right: 0px;
+    left: 0px;
     height: 100%;
-    width: 130px;
-    padding: 10px;
-    background-color:rgba(0,0,0,0.8);
+    width: 15%;
+    background-color:black;
     z-index: 5;
-    text-align: right;
+    text-align: left;
     color: white;
     padding-top: 35px;
 }
-.grid{
-    position: relative;
-    padding-top: 50px;
+
+#smallmultiple {
+    padding-left: 15%;
     width: 50%;
+    padding-bottom: 40%;
+}
+
+#chinamap{
+    position: fixed;
+    top: 0px;
+    left: 65%;
+    width: 35%;
+    height: 60%;
+    background-color:white;
+}
+
+#linechart{
+    position: fixed;
+    top: 60%;
+    left: 15%;
+    width: 85%;
+    height: 40%;
+    background-color:yellow;
 }
 #filter{
     position: fixed;

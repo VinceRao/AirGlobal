@@ -6,22 +6,27 @@ define([
   , function (d3, Backbone, tmpl) {
     var SmallMultiple =  Backbone.View.extend({
       initialize : function (opts) {
-        this.data = opts.data.berkeley;
-        this.$el.appendTo(opts.rootView.$el);
+        this.data = opts.data;
+        this.root =  opts;
+        // this.$el.appendTo(opts.rootView.$el);
+        this.$el= $('#smallmultiple');
         this.$el.append("<div id='filter'></div>");
         this.$el.append("<div class='grid'></div>");
         this.$filter = $("#filter");
         this.$grid = $(".grid");
         this.$grid.css('overflow', 'scroll');
-        this.$grid.width('1000px');
         this.curAttr;
+        this.max_array = [];
+        this.min_array = [];
+        this.med_array = [];
+        this.curAttrAry = this.med;
       },
       render : function () {
         var self = this;
         var m = 10,
           r = 50;
 
-        this.$filter.append(_.template(tmpl))
+        // this.$filter.append(_.template(tmpl))
         var div = d3.select(".grid").selectAll("div")
           .data(self.data.getAllCities())
           .enter().append("div")
@@ -66,10 +71,14 @@ define([
           .attr("font-size", "14")
           .attr("font-weight", "900")
           .text(function(d, i) {
-            return (+d3.max(self.data.getAllDayForCity(d))).toFixed(2);
+            var max = +d3.max(self.data.getAllDayForCity(d));
+            self.max_array[i] = max;
+            return max.toFixed(2);
           });
 
         this.curAttr = this.max;
+        this.curAttrAry = this.max_array;
+        self.root.chineseMap.reset(self.curAttrAry);
 
         this.min = svg.append("text")
           .attr("dx", "0px")
@@ -80,7 +89,9 @@ define([
           .attr("font-weight", "900")
           .attr("display", "none")
           .text(function(d, i) {
-            return (+d3.min(self.data.getAllDayForCity(d))).toFixed(2);
+            var min = +d3.min(self.data.getAllDayForCity(d));
+            self.min_array[i] = min;
+            return min.toFixed(2);
           });
 
         this.med = svg.append("text")
@@ -92,7 +103,9 @@ define([
           .attr("font-weight", "900")
           .attr("display", "none")
           .text(function(d, i) {
-            return (+Math.median(self.data.getAllDayForCity(d))).toFixed(2);
+            var med = +Math.median(self.data.getAllDayForCity(d));
+            self.med_array[i] = med;
+            return med.toFixed(2);
           });
 
 
@@ -146,6 +159,7 @@ define([
             times.text(function(d){
               return new Intl.DateTimeFormat('en-US').format(new Date(self.data.getMicroseconds(i)));
             });
+            self.root.chineseMap.change(self.data.getMicroseconds(i));
           })
 
           .on('mouseout', function (d, i) {
@@ -162,6 +176,8 @@ define([
               var value = $(this.parentElement).find('text:visible')[1].textContent;
               return self.data.getColor(+value);
             })
+
+            self.root.chineseMap.reset(self.curAttrAry);
             times.text(function(d){
               return "";
             });
@@ -200,6 +216,7 @@ define([
         var self = this;
         this.curAttr.attr("display", "none");
         this.curAttr = this.min;
+        this.curAttrAry = this.min_array;
         this.curAttr.attr("display", null);
         this.rects.attr("fill", function () {
           var value = $(this.parentElement).find('.min').text()
@@ -215,6 +232,7 @@ define([
         var self = this;
         this.curAttr.attr("display", "none");
         this.curAttr = this.max;
+        this.curAttrAry = this.max_array;
         this.curAttr.attr("display", null);
         this.rects.attr("fill", function () {
           var value = $(this.parentElement).find('.max').text()
@@ -230,6 +248,7 @@ define([
         var self = this;
         this.curAttr.attr("display", "none");
         this.curAttr = this.max;
+        this.curAttrAry = this.max_array;
         this.curAttr.attr("display", null);
         this.rects.attr("fill", function () {
           var value = $(this.parentElement).find('.max').text()
@@ -245,6 +264,7 @@ define([
         var self = this;
         this.curAttr.attr("display", "none");
         this.curAttr = this.med;
+        this.curAttrAry = this.med_array;
         this.curAttr.attr("display", null);
         this.rects.attr("fill", function () {
           var value = $(this.parentElement).find('.med').text()

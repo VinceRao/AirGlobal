@@ -3,10 +3,9 @@ define([
   'jquery',
   'view/common/panel',
   'd3',
-  'd3-legend'
+  // 'd3-legend'
 ], function (Backbone, $, Panel, d3) {
-  var ChineseMap = Panel.extend({
-    className : 'ag-panel',
+  var ChineseMap = Backbone.View.extend({
 
     getTitle : function () {
       return this.title;
@@ -17,35 +16,24 @@ define([
       this.margin = {top: 10, left: 10, bottom: 10, right: 10};
       this.municipalities = ['bei_jing', 'shang_hai', 'tian_jin', 'chong_qing'];
       this.title = opts.title;
-      this.data = opts.data || {};
-      this.root = opts.rootView;
-      this.$el.width(opts.w);
-      this.$el.height(opts.h);
-      Panel.prototype.initialize.call(this);
-      this.$el.appendTo(this.root.$el);
+      this.data = opts.data
+      this.root = opts;
+      this.$el= $('#chinamap');
       this.color = d3.scale.linear()
         .domain([0,300])
         .range(["rgb(0, 255, 0)", "rgb(255, 0, 0)"]);
-      d3.select(window).on('resize', function () {
-        self.resize(self);
-      });
     },
 
     draw : function () {
-      var width = +this.$container.width()
+      var width = +this.$el.width()
         , width = width - this.margin.left - this.margin.right
-        , height = +this.$el.height() - +this.$header.outerHeight(true)
+        , height = +this.$el.height()
         , height = height - this.margin.top - this.margin.bottom
         // , height = width * 0.5
         , self = this
         , $def = $.Deferred()
         ;
 
-      this.legendLinear = d3.legend.color()
-        .shapeWidth(30)
-        .cells(6)
-        .orient('horizontal')
-        .scale(this.color);
 
       this.proj = d3.geo.mercator()
         .center([105, 38])
@@ -55,22 +43,11 @@ define([
       this.path = d3.geo.path()
         .projection(this.proj);
 
-      this.map = d3.select("div.panel-body").append("svg")
+      this.map = d3.select('#chinamap').append("svg")
         .attr("width", width)
         .attr("height", height);
 
-      this.map.append("g")
-        .attr("class", "legendLinear")
-        .attr("transform", "translate(20,20)");
-
-      this.map.append("g")
-        .attr("class", "legendLinear")
-        .attr("transform", "translate(20,20)");
-
-      this.map.select(".legendLinear")
-        .call(this.legendLinear);
-
-      this.tooltip = d3.select("div.panel-body").append("div")
+      this.tooltip = d3.select('#chinamap').append("div")
         .attr("id", "tooltip")
         .style("display", "none")
         .style("position", "absolute")
@@ -83,17 +60,25 @@ define([
           .data(cities.features)
           .enter()
           .append("path")
-          // .attr('fill', 'blue')
-          // .attr("class", function(d) { return "q" + rateById.get(d.id); })
+          .attr('fill', 'white')
           .attr("d", self.path)
           .attr("id", function(d) {return d.id;})
           .attr("name", function(d) {return d.properties.name;})
           .on("mouseover", function(d) {
-            var m = d3.mouse(d3.select("body").node());
+            var m = d3.mouse(d3.select('#chinamap').node());
             self.tooltip.style("display", null)
               .style("left", m[0] + 10 + "px")
               .style("top", m[1] - 10 + "px");
-            $("#tt_county").text(d.properties.name);
+            $("#tt_county").text(function () {
+              var name = self.getCityEnglishName(d.id);
+              if(!name){
+                name = d.properties.name;
+              }
+              return name;
+            });
+          })
+          .on('click', function (d) {
+            console.info(self.getCityEnglishName(d.id));
           })
           .on("mouseout", function() {
             self.tooltip.style("display", "none");
@@ -113,39 +98,32 @@ define([
       return $def;
     },
 
-    index : 0,
-
     change : function (timestamp) {
-      // console.log(this.getIndex(timestamp));
-      var value = this.data.data_array[this.getIndex(timestamp)]
-        , self = this
-        ;
-      value.forEach(function (d) {
-        var v_pm = d.v;
-        self.map.select("path[id='{0}']".format(d.id))
-          .attr("fill", function() {return self.color(v_pm)})
+      var value = this.data.getAllCityAtDay(timestamp),
+          city_name = this.data.getAllCities(),
+          self = this
+          ;
+      value.forEach(function (d, i) {
+        var city_id = self.data.getMapID(city_name[i])
+        self.map.select("path[id='{0}']".format(city_id))
+          .attr("fill", function() {return self.data.getColor(d)})
         ;
       })
-      this.index++;
 
     },
 
-    resize : function (self) {
-      var width = parseInt(self.$container.width())
-        , width = width - self.margin.left - self.margin.right
-        , height = parseInt(self.$el.height() - self.$header.height())
-        , height = height - self.margin.top - self.margin.bottom
-        // , height = width * 0.5
+    reset : function (array) {
+        var city_name = this.data.getAllCities(),
+        self = this
         ;
-      self.proj
-        .translate([width / 2, height / 2])
-        .scale(height);
-      self.map
-        .attr("width", width)
-        .attr("height", height);
-      self.map.selectAll('path').attr('d', self.path);
+      array.forEach(function (d, i) {
+        var city_id = self.data.getMapID(city_name[i])
+        self.map.select("path[id='{0}']".format(city_id))
+          .attr("fill", function() {return self.data.getColor(d)})
+        ;
+      })
     },
-
+    
     getIndex : function (time) {
       var idx = this.data.date_array_number.indexOf(+time);
       if (idx === -1){
@@ -154,6 +132,10 @@ define([
       return idx;
       // return this.data.date_array.indexOf(new Date(time));
     },
+    
+    getCityEnglishName : function (id) {
+      return this.data.getCityNameByID(id);
+    }
 
   });
   return ChineseMap;
