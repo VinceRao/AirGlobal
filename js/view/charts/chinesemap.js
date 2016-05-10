@@ -126,29 +126,41 @@ define([
     },
 
     change : function (timestamp) {
-      var value = this.data.getAllCityAtDay(timestamp),
-          city_name = this.data.getAllCities(),
+      var path = $('#smallmultiple').find('.cityname:visible').toArray(),
+          dayIndex = +this.data.getDayIndex(timestamp),
           self = this
           ;
-      value.forEach(function (d, i) {
-        var city_id = self.data.getMapID(city_name[i])
+      path.forEach(function (d) {
+        var city_id = self.data.getMapID(d.textContent),
+            val = +self.data.getAllDayForCity(d.textContent)[dayIndex];
         self.map.select("path[id='{0}']".format(city_id))
-          .attr("fill", function() {return self.data.getColor(d)})
+          .attr("fill", function() {return self.data.getColor(val)})
         ;
       })
 
     },
 
     reset : function (array) {
-        var city_name = this.data.getAllCities(),
-        self = this
-        ;
-      array.forEach(function (d, i) {
-        var city_id = self.data.getMapID(city_name[i])
+      var path = $('#smallmultiple').find('.cityname:visible').toArray(),
+          self = this
+          ;
+      path.forEach(function (d) {
+        var city_id = self.data.getMapID(d.textContent),
+            city_index = self.data.getCityIndex(d.textContent),
+            val = +array[city_index]
+            ;
         self.map.select("path[id='{0}']".format(city_id))
-          .attr("fill", function() {return self.data.getColor(d)})
+          .attr("fill", function() {return self.data.getColor(val)})
         ;
       })
+    },
+
+    setCityColor : function (city_name, x) {
+      var city_id = this.data.getMapID(city_name)
+      var color = x ? this.data.getColor(x) : 'white';
+      this.map.select("path[id='{0}']".format(city_id))
+        .attr("fill", function() {return color})
+      ;
     },
     
     getIndex : function (time) {

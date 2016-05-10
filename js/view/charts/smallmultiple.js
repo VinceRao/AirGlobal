@@ -176,9 +176,9 @@ define([
 
             self.curAttr.attr("display", null);
 
-            self.rects.attr("fill", function () {
-              var value = $(this.parentElement).find('text:visible')[1].textContent;
-              return self.data.getColor(+value);
+            self.rects.attr("fill", function (d, i) {
+              // var value = $(this.parentElement).find('text:visible')[1].textContent;
+              return self.data.getColor(self.curAttrAry[i]);
             })
 
             self.root.chineseMap.reset(self.curAttrAry);
@@ -203,7 +203,6 @@ define([
           }
         });
         $("#smallmultiple").isotope('reloadItems');
-        $("#smallmultiple").isotope('reloadItems');
         $('#smallmultiple').isotope({
           sortBy: 'name',
           sortAscending: true
@@ -215,6 +214,7 @@ define([
         this.curAttr.attr("display", "none");
         this.curAttr = this.min;
         this.curAttrAry = this.min_array;
+        self.root.chineseMap.reset(self.curAttrAry);
         this.curAttr.attr("display", null);
         this.curAttrClass = '.min'
         this.rects.attr("fill", function () {
@@ -232,6 +232,7 @@ define([
         this.curAttr.attr("display", "none");
         this.curAttr = this.med;
         this.curAttrAry = this.med_array;
+        self.root.chineseMap.reset(self.curAttrAry);
         this.curAttr.attr("display", null);
         this.curAttrClass = '.med'
         this.rects.attr("fill", function () {
@@ -249,6 +250,7 @@ define([
         this.curAttr.attr("display", "none");
         this.curAttr = this.max;
         this.curAttrAry = this.max_array;
+        self.root.chineseMap.reset(self.curAttrAry);
         this.curAttr.attr("display", null);
         this.curAttrClass = '.max'
         this.rects.attr("fill", function () {
@@ -266,6 +268,7 @@ define([
         this.curAttr.attr("display", "none");
         this.curAttr = this.med;
         this.curAttrAry = this.med_array;
+        self.root.chineseMap.reset(self.curAttrAry);
         this.curAttr.attr("display", null);
         this.curAttrClass = '.med'
         this.rects.attr("fill", function () {
@@ -287,6 +290,7 @@ define([
               target = this;
             }
             var x = +$(target).find(self.curAttrClass).text(),
+                city_name = $(target).find('.cityname').text(),
                 result;
             switch (+range_id){
               case 0:
@@ -315,6 +319,12 @@ define([
                 break;
               default:
                 result = false;
+            }
+            if(result){
+              self.root.chineseMap.setCityColor(city_name, x);
+            }
+            else {
+              self.root.chineseMap.setCityColor(city_name);
             }
             return result;
           }
