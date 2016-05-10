@@ -67,8 +67,3 @@ body {
     height: 40%;
     background-color: #eeeeee;
 }
-#filter{
-    position: fixed;
-    top: 0px;
-    z-index: 5;
-}

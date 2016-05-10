@@ -208,11 +208,16 @@ define([
         'click .filter-opt' : 'setFilterOpt',
         'click #search' : 'search',
         'click #reset' : 'reset',
-        'click button.min' : 'sorttByMin',
-        'click button.name' : 'sorttByName',
-        'click button.max' : 'sorttByMax',
-        'click button.med' : 'sorttByMed',
+        'click otpion.min' : 'sorttByMin',
+        'click otpion.name' : 'sorttByName',
+        'click otpion.max' : 'sorttByMax',
+        'click otpion.med' : 'sorttByMed',
+        'change #sort' : 'sort',
 
+      },
+
+      sort : function () {
+        console.info("got you")
       },
 
       sorttByMin : function(){

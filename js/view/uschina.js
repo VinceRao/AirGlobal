@@ -15,7 +15,7 @@ define([
     template : _.template(tmpl),
     initialize : function (options) {;
       this.options = options
-      this.data = options.data.embassy;
+      this.data = options.data.berkeley;
       this.root = options.root;
       this.$el.html(this.template());
       this.$el.height('100%')
@@ -29,7 +29,7 @@ define([
 
       this.chineseMap = new ChineseMap(this);
       $.when(this.chineseMap.draw()).done(function () {
-        // self.smallmultiple.render();
+        self.smallmultiple.render();
         self.linechart.render();
       });
     },
@@ -39,8 +39,30 @@ define([
       this.render()
     },
 
+    sort : function () {
+      var sortBy = $('#sort').val();
+      switch (sortBy){
+        case "max":
+          this.smallmultiple.sorttByMax();
+          break;
+        case "min":
+          this.smallmultiple.sorttByMin();
+          break;
+        case "name":
+          this.smallmultiple.sorttByName();
+          break;
+        case "med":
+          this.smallmultiple.sorttByMed();
+          break;
+        default:
+          return;
+      }
+
+    },
+
     events : {
-      'change #datasource' : 'changeDataSource'
+      'change #datasource' : 'changeDataSource',
+      'change #sort' : 'sort'
     }
   });
   return USChina

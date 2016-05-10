@@ -1,9 +1,44 @@
 <div id="navbar">
+    <li><h2>AIR CHINA 2.5</h2></li>
+    <li><a><h2>INTRO</h2></a></li>
     <li>
         <span>Data Source</span>
         <select id="datasource" name="select">
             <option value="embassy">US Embassy</option>
             <option value="berkeley" selected>Berkely</option>
+        </select>
+        <br>
+        <span>Start :</span>
+        <input>
+        <br>
+        <span>End   :</span>
+        <input>
+    </li>
+    <li>
+        <span>Search City</span>
+        <input>
+        <br>
+    </li>
+    <li>
+        <span>Sort</span>
+        <select id="sort" name="select">
+            <option class="max" value="max">MAX</option>
+            <option class="min" value="min" >MIN</option>
+            <option class="name" value="name" selected>NAME</option>
+            <option class="med" value="med" >MED</option>
+        </select>
+    </li>
+    <li>
+        <span>Filter</span>
+        <select id="filter" name="select">
+            <option value="0">All</option>
+            <option value="1" >0 ~ 50</option>
+            <option value="2" >51 ~ 100</option>
+            <option value="3" >101 ~ 150</option>
+            <option value="4" >151 ~ 200</option>
+            <option value="5" >201 ~ 300</option>
+            <option value="6" >301 ~ 500</option>
+            <option value="7" > larger than 500 </option>
         </select>
     </li>
 </div>
