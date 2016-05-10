@@ -16,8 +16,8 @@ define([
       var color, defs, height, line, margin, maxDays, minDays, svg, width, x, xAxis, y, yAxis, zoom;
       margin = {
         top: 20,
-        right: 100,
-        bottom: 50,
+        right: 250,
+        bottom: 80,
         left: 50
       };
 
@@ -32,6 +32,27 @@ define([
       minDays = 4;
       x = d3.scale.linear().range([0, width]);
       y = d3.scale.linear().range([height, 0]);
+
+      var y2Scale = d3.scale.ordinal()
+          .domain([" ","Good","Moderate","Sensitive","Unhealthy","","Very Unhealthy","   ",
+            "    ","     ","      ","       ","Harzardous"])
+          .rangePoints([height, 0]);
+
+      var y3Scale = d3.scale.linear()
+          .domain([0, 600])
+          .range([height, 0]);
+
+      var y3Axis = d3.svg.axis()
+          .scale(y3Scale)
+          .orient("left")
+          .innerTickSize(-width)
+          .outerTickSize(0)
+          .tickPadding(10);
+
+      var y2Axis = d3.svg.axis()
+          .scale(y2Scale)
+          .orient("right");
+
       color = d3.scale.category10();
       xAxis = d3.svg.axis().scale(x).tickFormat(function(d) {
         if (Math.floor(d) !== d) {
@@ -119,7 +140,13 @@ define([
         .style("text-anchor", "center")
         .style("font-size","13px")
         .text("Air Pollution PM25");
-
+      svg.append("g")
+          .attr("class", "y2 axis")
+          .attr("transform", "translate("+width+",0)")
+          .call(y2Axis);
+      svg.append("g")
+          .attr("class", "y3 axis")
+          .call(y3Axis)
 
       //compute the maxday minday and maxtemp and mintemp for scale extent
       return function(data) {
@@ -130,16 +157,16 @@ define([
           });
         });
         x.domain([1, maxDays]);
-        y.domain([
-          d3.min(data, function(d) {
-            return d3.min(d.temps, function(t) {
-              return t.temp;
-            });
-          }), d3.max(data, function(d) {
-            return d3.max(d.temps, function(t) {
-              return t.temp;
-            });
-          })
+        y.domain([0,600
+          //d3.min(data, function(d) {
+          //  return d3.min(d.temps, function(t) {
+          //    return t.temp;
+          //  });
+          //}), d3.max(data, function(d) {
+          //  return d3.max(d.temps, function(t) {
+          //    return t.temp;
+          //  });
+          //})
         ]);
 
         zoom.scaleExtent([1, maxDays / minDays]);
@@ -171,13 +198,13 @@ define([
           return x(d.day);
         }).attr('r', 3);
         cityEnter.append("text").attr('class', 'city-name');
-        city.select("text.city-name").attr("x", width + 20).attr("y", function(d, i) {
+        city.select("text.city-name").attr("x", width + 100).attr("y", function(d, i) {
           return i * 20;
         }).attr("dy", ".35em").text(function(d) {
           return d.name;
         });
         cityEnter.append('circle').attr('class', 'city-dot');
-        city.select('circle.city-dot').attr('cx', width + 10).attr('cy', function(d, i) {
+        city.select('circle.city-dot').attr('cx', width + 95).attr('cy', function(d, i) {
           return i * 20;
         }).attr('r', 3).style('fill', function(d) {
           return color(d.name);

@@ -40,9 +40,9 @@ svg .line {
     stroke: steelblue;
     stroke-width: 1px;
 }
-svg .tick > line {
-    display: none;
-}
+/*svg .tick > line {*/
+    /*display: none;*/
+/*}*/
 svg rect.zoom-panel {
     cursor: move;
     fill: none;
@@ -66,3 +66,6 @@ div.tooltipline {
     pointer-events: none;
 }
 
+.tick line{
+    opacity: 0.2;
+}
