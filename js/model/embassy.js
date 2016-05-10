@@ -1,145 +1,169 @@
+/**
+ * Created by Shuai on 5/7/16.
+ */
 define([
     'model/datamodel',
     'd3'
 ], function(DataModel, d3){
     var Embassy = DataModel.extend({
         load_def : $.Deferred(),
+
         init : function(){
             console.log("Embassy init");
-            console.log(d3);
-            console.log($.Deferred());
         },
+
         load : function(){
             var self = this;
-            self.beijing = {};
-            self.beijing.data = [];
-            self.chengdu = {};
-            self.chengdu.data = [];
-            self.guangzhou = {};
-            self.guangzhou.data = [];
-            self.shanghai = {};
-            self.shanghai.data = [];
-            self.shenyang = {};
-            self.shenyang.data = [];
-            self.interval = 3600000*24;
-            self.city_map = {}; //get initialized from an instance of Berkeley
+            /*call back function as argument for ds.csv, applied on each row object of the data*/
+            var callback = function (cities) {
+                var city_map = {};
+                var city_index = {};
+                var city_id_map = {};
+                cities.forEach(function (city, i) {
+                    city_map[city.value] = city.id; //value is city name, id is an integer
+                    city_id_map[city.id] = city.value; //value is city name, id is an integer
+                    city_index[city.value] = i;
 
-            var beijing = function (data){
-                self.beijing.start = self.getUTCMilliseconds(data[0].Date);
-                self.beijing.end = self.getUTCMilliseconds(data[data.length-1].Date);
-                data.forEach(function(entry){
-                    self.beijing.data.push(+entry['Value']);
                 });
-                var chengdu = function(data){
-                    self.chengdu.start = self.getUTCMilliseconds(data[0].Date);
-                    self.chengdu.end = self.getUTCMilliseconds(data[1491].Date);
-                    data.forEach(function(entry){
-                        self.chengdu.data.push(+entry['Value']);
+                self.city_map = city_map;
+                self.city_index = city_index;
+                self.city_id_map = city_id_map;
+
+
+                d3.csv('Data/embassy_daily(max).csv', function (time_rows) {
+                    /*set the time frame of the date*/
+                    self.start = self.getUTCMilliseconds("4/8/08");
+                    self.interval = 3600000*24;
+                    self.end = self.start + self.interval * 2855;
+                    //console.log(self.start);
+                    //console.log(self.interval);
+
+                    /*construct Berkeley.by_time and Berkeley.by_city, both are arrays of arrays */
+                    self.by_day = []; //has 2928/24 = 122 days, each being an array of length 182
+                    self.by_city = []; // has 182 elements, each beijing an array of length 122
+
+                    //initialize the 182 empty arrays for each city
+                    for(idx = 0; idx < 5; idx++ ){
+                        self.by_city.push([]);
+                    }
+                    //create the arrays inside Berkeley.by_day and Berkeley.by_city
+                    console.log(time_rows)
+                    time_rows.forEach(function (entry, index) {
+                        var day_array = []; // length of 5 eventually
+                        for (var city in entry) {
+                            day_array.push(+entry[city]);
+                            var idx = self.getCityIndex(city);
+                            self.by_city[idx].push(+entry[city]);
+                        }
+                        self.by_day.push(day_array);
                     });
-                    var guangzhou = function(data){
-                        self.guangzhou.start = self.getUTCMilliseconds(data[0].Date);
-                        self.guangzhou.end = self.getUTCMilliseconds(data[1856].Date);
-                        data.forEach(function(entry){
-                            self.guangzhou.data.push(+entry['Value']);
-                        });
-                        var shanghai = function(data){
-                            self.shanghai.start = self.getUTCMilliseconds(data[0].Date);
-                            self.shanghai.end = self.getUTCMilliseconds(data[1856].Date);
-                            data.forEach(function(entry){
-                                self.shanghai.data.push(+entry['Value']);
-                            });
-                            var shenyang = function(data){
-                                self.shenyang.start = self.getUTCMilliseconds(data[0].Date);
-                                self.shenyang.end = self.getUTCMilliseconds(data[1125].Date);
-                                data.forEach(function(entry){
-                                    self.shenyang.data.push(+entry['Value']);
-                                });
-                                self.finish();
-                            };
-                            d3.csv('Data/US_mission_China/shenyang_daily.csv', shenyang);
-                        };
-                        d3.csv('Data/US_mission_China/shanghai_daily.csv', shanghai);
-                    };
-                    d3.csv('Data/US_mission_China/guangzhou_daily.csv', guangzhou);
-                };
-                d3.csv('Data/US_mission_China/chengdu_daily.csv', chengdu);
+
+                    //console.log(self.by_day);
+                    //console.log(self.by_city);
+
+                    self.finish();
+                });
             };
-            d3.csv('Data/US_mission_China/beijing_daily.csv', beijing);
+
+            /* load the data*/
+            d3.csv('Data/china_cities_5.csv', callback);
             return this.load_def.promise();
         },
-
 
         //get all city data for a time range
         getOneCityInTimeRange: function(city, start, end){
             var res = [];
             var alltime = this.getAllDayForCity(city);
-            var istart = this.getDayIndex(city, start);
-            var iend = this.getDayIndex(city, end);
+            var istart = this.getDayIndex(start);
+            var iend = this.getDayIndex(end);
             for(var i = istart; i <= iend; i++){
                 var datapoint = {};
-                datapoint.date = this.getMicroseconds(city, i);
+                datapoint.date = this.getMicroseconds(i);
                 datapoint.value = alltime[i];
                 res.push(datapoint);
             }
             return res;
         },
 
+        //get data for all cities at time
+        getAllCityAtDay: function(time){
+            var day = this.getDayIndex(time);//absolute microseconds
+            return this.by_day[day];
+        },
+
         //get data for all days for a city
         getAllDayForCity: function(cityname){
-            return this[cityname.toLowerCase()].data;
+            var city = this.getCityIndex(cityname);
+            return this.by_city[city];
         },
 
-        //get data for all days for a city
-        getAllTimeForCity: function(cityname){
-            return this[cityname.toLowerCase()].data;
+
+        //select time range, input are start time and end time, output is array[length of range]
+        getTimeRangeData: function(start, end){
+            var ts = this.getDayIndex(start);
+            var te = this.getDayIndex(end);
+            return this.by_day.slice(ts, te+1);
         },
 
-        //get data for all cities at day
-        getAllCityAtDay: function(day){
-            var fivecities = [];
-            if(day < this.beijing.start || day > this.beijing.end){
-                fivecities.push(+NaN);
-            }else{
-                var idx = this.getDayIndex("beijing", day);
-                fivecities.push(this.beijing.data[idx]);
+        //select cities, return all days data for the cities in a map
+        getCitiesData: function(names){
+            var map = {};
+            for(var i = 0; i < names.length; i++){
+                var name = names[i];
+                var citydata = this.getAllDayForCity(name);
+                map[name] = citydata;
             }
-            if(day < this.chengdu.start || day > this.chengdu.end){
-                fivecities.push(+NaN);
-            }else{
-                var idx = this.getDayIndex("chengdu", day);
-                fivecities.push(this.chengdu.data[idx]);
-            }
-            if(day < this.guangzhou.start || day > this.guangzhou.end){
-                fivecities.push(+NaN);
-            }else{
-                var idx = this.getDayIndex("guangzhou", day);
-                fivecities.push(this.guangzhou.data[idx]);
-            }
-            if(day < this.shanghai.start || day > this.shanghai.end){
-                fivecities.push(+NaN);
-            }else{
-                var idx = this.getDayIndex("shanghai", day);
-                fivecities.push(this.shanghai.data[idx]);
-            }
-            if(day < this.shenyang.start || day > this.shenyang.end){
-                fivecities.push(+NaN);
-            }else{
-                var idx = this.getDayIndex("shenyang", day);
-                fivecities.push(this.shenyang.data[idx]);
-            }
-            return fivecities;
+            return map;
         },
 
-        //get city index in the by_city array (length 5)
+        //select cities for a set of timepoints, return a map, timepoints can be indices or microseconds
+        getCitiesTimepoints: function(names, timepoints){
+            var citiesAllTime = this.getCitiesData(names);
+            var map = {};
+            var indices = [];
+            var microseconds = [];
+            for(var i = 0; i < timepoints.length; i++){
+                var t = timepoints[i];
+                var idx;
+                var microsecond;
+                if(t <122){ //time indices
+                    idx = t;
+                    microsecond = this.getMicroseconds(idx);
+                }else{//microseconds
+                    var idx = this.getDayIndex(t);
+                    microsecond = t;
+                }
+                indices.push(idx);
+                microseconds.push(microsecond);
+            }
+
+            map.cities = names;
+            map.timepoints = microseconds;
+            map.dayindices = indices;
+            for (var city in citiesAllTime){
+                var alltimearray = citiesAllTime[city];
+                map[city] = [];
+                for( var i = 0 ; i < map.dayindices.length; i++){
+                    var idx = map.dayindices[i];
+                    map[city].push(alltimearray[idx]);
+                }
+            }
+            return map;
+        },
+
+        //get day index in the by_day array (length 122)
+        getDayIndex: function(microseconds){
+            return (microseconds - this.start)/this.interval;
+        },
+
+        //get microsecond from day index
+        getMicroseconds: function(day_index){
+            return this.start + this.interval * day_index;
+        },
+
+        //get city index in the by_city array (length 182)
         getCityIndex: function(cityname){
-            switch(cityname){
-                case "beijing": return 0;
-                case "chengdu": return 1;
-                case "guangzhou": return 2;
-                case "shanghai":return 3;
-                case "shenyang": return 4;
-                default: return -1;
-            }
+            return this.city_index[cityname];
         },
 
         //get map id
@@ -147,28 +171,25 @@ define([
             return this.city_map[cityname];
         },
 
-        //get day index in the by_day array (length 122)
-        getDayIndex: function(city, microseconds){
-            return (microseconds - this[city.toLowerCase()].start)/this.interval;
+        getCityNameByID: function(id){
+            return this.city_id_map[id];
         },
 
-        //get microsecond from day index
-        getMicroseconds: function(city, day_index){
-            return this[city.toLowerCase()].start + this.interval * day_index;
+        //get all city names
+        getAllCities: function(){
+            return Object.keys(this.city_map);
         },
-
-        getStart: function(city){
-            var name = city.toLowerCase();
-            return this[name].start;
+        getStart: function(){
+            return this.start;
         },
-        getEnd: function(city){
-            return this[city.toLowerCase()].end;
+        getEnd: function(){
+            return this.end;
         },
-
         getUTCMilliseconds : function(date_string){
             var date = date_string.split("/");
             return Date.UTC(+date[2]+2000, +(date[0]-1), +date[1]);
         },
+
         //given concentration calculate AQI
         getAQI: function(concentration){
             if(_.isNaN(concentration)){
@@ -201,6 +222,8 @@ define([
                 return "#ff0000";  //red
             }else if(concentration <= 300){
                 return "#993366";  //purple
+            }else if(_.isNaN(concentration)){
+                return "#ffffff";  //white
             }else {
                 return "#663300";  //brown
             }
