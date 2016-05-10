@@ -324,11 +324,13 @@ define([
               target = this;
             }
             var citynanme = $(target).find('text.cityname').text();
+            var result;
             if (cities.length < 1){
               return true;
+            } else if (cities.length === 1 && cities[0].trim() === ""){
+              return true;
             }
-            var result = cities.indexOf(citynanme) > -1 ? true : false;
-            console.info(result)
+            result = cities.indexOf(citynanme) > -1 ? true : false;
             return result;
           }
         });
