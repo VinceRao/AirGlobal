@@ -9,6 +9,7 @@ define([
       this.$el.appendTo(opts.rootView.$el);
       this.linchartData = [];
       this.id = 1;
+      this.dayIndex = 0;
     },
 
     chart : function(elem) {
@@ -19,7 +20,7 @@ define([
         bottom: 50,
         left: 50
       };
-
+      var self = this;
       width = 1500 - margin.left - margin.right;
       height = 400 - margin.top - margin.bottom;
       maxDays = 50;
@@ -28,11 +29,15 @@ define([
       y = d3.scale.linear().range([height, 0]);
       color = d3.scale.category10();
       xAxis = d3.svg.axis().scale(x).tickFormat(function(d) {
-        //console.log(d);
+        self.dayIndex = self.dayIndex + 1;
         if (Math.floor(d) !== d) {
 
         } else {
-          return 'day ' + d;
+          var date = self.data.getMicroseconds(d);
+          time = new Date(date);
+          var daydate = (time.getMonth()+1).toString()+'/'
+              +(time.getDate()-1).toString()+'/'+time.getFullYear().toString();
+          return  daydate;
         }
       }).orient("bottom");
 
@@ -63,9 +68,6 @@ define([
         }).attr('r', 2);
       });
 
-      //if(svg){
-      //  svg.remove();
-      //}
       var tempro = d3.select(elem).selectAll("svg");
       tempro.remove();
       svg = d3.select(elem).append("svg")
@@ -175,33 +177,34 @@ define([
     formateDataForDrawLine : function(city) {
       var data, j;
       var airData = this.data.getAllDayForCity(city);
-      console.log("I am formate" + airData);
+      var results = this.formateDataforDays(airData);
       data = {
         id: this.id,
         name: "City " + city,
-        temps: (function() {
-          var results;
-          results = [];
-          for (j = 0; j < airData.length; j++) {
-            //console.log("I am Nan" + airData[j]);
-            if(_.isNaN(+airData[j]))
-              continue;
-            results.push({
-              day: j+1,
-              temp: Math.round(airData[j])
-            });
-          }
-          return results;
-        })()
+        temps: results
       };
       this.id = this.id + 1;
       return data;
     },
 
+    formateDataforDays : function(airData){
+      var results;
+      results = [];
+      for (j = 0; j < airData.length; j++) {
+
+        if(_.isNaN(+airData[j]))
+          continue;
+        results.push({
+          day: j+1,
+          temp: Math.round(airData[j])
+        });
+      }
+      return results;
+    },
+
     drawLineByCity : function (cityName){
       var self = this;
       var data = self.formateDataForDrawLine(cityName);
-      console.log("I am draw");
       console.log(data);
       cityCheck = document.getElementById(cityName);
       cityCheck.addEventListener('change', function(){
@@ -222,19 +225,17 @@ define([
     listenRemoveCity : function(cityName){
       for(var i = 0; i<this.linchartData.length;i++){
         if(this.linchartData[i].name=="City "+cityName){
-          console.log("I am remove");
           this.linchartData.splice(i,1);
           return this.chart(this.el)(this.linchartData);
         }
       }
     },
 
+
     render : function () {
-      var data = this.formateDataForDrawLine("Shanghai");
+      var data = this.formateDataForDrawLine("Qionghai");
       //console.log("I adata);
-
       this.linchartData.push(data);
-
       //this.linchartData.push(aa);
       this.chart(this.el)(this.linchartData);
       this.drawLineByCity("Beijing");
