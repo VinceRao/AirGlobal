@@ -7,9 +7,9 @@ Air China 2.5 is a web application that allows users to visualize and explore tw
 
 It is available at https://syuanivy.github.io/AirGlobal/
 
-The code can be found in the branch: "final" of this repository
+The code can be found in the branch: "final" of this repository. Data, Libraries, html templates, JS, data model, can be found in folders with relevant names. Other branches have work that may not be included in the final product of this project.
 
-Its features include the following parts:
+Its final features include the following parts:
 
 ### An Intro Page
 
