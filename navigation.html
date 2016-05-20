@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link href="css/third_party/bootstrap3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/third_party/bootstrap3/navigation.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="css/third_party/bootstrap3/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+
+
+<nav class="navbar navbar-default" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <!--
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Brand</a>
+        -->
+        <h3 class="navbar-text"> China PM2.5 </h3>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse">
+        <h4 class="navbar-text"> Intro </h4>
+
+        <form class="navbar-form" role="form">
+            <div class="form-group">
+                <label for="source" class="navbar-text"> Data Source:</label>
+                <select class="form-control" id="source">
+                    <option>Berkeley</option>
+                    <option>Embassy</option>
+                </select>
+            </div>
+        </form>
+
+        <hr>
+
+        <h4 class="navbar-text"> Dates of Interest </h4>
+
+        <form class="navbar-form" role="form">
+            <div class="form-group">
+                <label for="start" class="navbar-text">Start:</label>
+                <input type="text" class="form-control" id="start">
+            </div>
+            <div class="form-group">
+                <label for="end" class="navbar-text">End:</label>
+                <input type="text" class="form-control" id="end">
+            </div>
+            <button type="submit" class="btn btn-default navbar-btn"> Apply </button>
+        </form>
+
+        <hr>
+
+        <h4 class="navbar-text"> City of Interest </h4>
+
+        <form class="navbar-form" role="form">
+            <div class="form-group">
+                <input type="text" class="form-control" id="start">
+            </div>
+
+            <button type="submit" class="btn btn-default navbar-btn"> Search </button>
+        </form>
+
+        <hr>
+
+
+        <h4 class="navbar-text"> Sorting </h4>
+        <form class="navbar-form" role="form">
+            <div class="form-group">
+                <!-- <p><label for="sel1" class="navbar-text"> Sorting: </label></p> -->
+                <select class="form-control" id="sel1">
+                    <option>Max</option>
+                    <option>Min</option>
+                    <option>Median</option>
+                    <option>Mean</option>
+                </select>
+            </div>
+        </form>
+
+    </div><!-- /.navbar-collapse -->
+</nav>
+
+</body>
+</html>

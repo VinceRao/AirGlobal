@@ -12,6 +12,18 @@ define([
       });
     };
 
+    Math.median = function(arya) {
+      var  numA, i, ary = [];
+      for (i = arya.length-1; i >= 0; i--) {
+          if(!_.isNaN(+arya[i])){
+            ary.push(+arya[i]);
+          }
+      }
+      ary.sort();
+      while (ary.length > 1 && !isFinite(ary[0])) ary.shift();
+      return ary[Math.floor(ary.length/2)];
+    }
+
     Util = function() {
     };
 
