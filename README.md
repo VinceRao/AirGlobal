@@ -7,7 +7,7 @@ Air China 2.5 is a web application that allows users to visualize and explore tw
 
 It is available at https://syuanivy.github.io/AirGlobal/
 
-The code can be found in the branch: final of this repository
+The code can be found in the branch: "final" of this repository
 
 Its features include the following parts:
 
@@ -15,7 +15,7 @@ Its features include the following parts:
 
 A static page with introduction to the problem, sample pictures of the toxic haze caused by high concentration of PM2.5 in three major cities in China, as well as the color scheme of Air Quality Index according to WHO standard, explaining how hazardous PM2.5 is at different concentrations.
 
-### Chinese city Map
+### Chinese City Map
 
 We use geojson to generate the chinese map. Base on the data, we translate the PM2.5 into AQI color and fill it to each city. This way you can easily see how severe the pollution is in that city. 
 
